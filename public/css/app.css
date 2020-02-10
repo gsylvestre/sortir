@@ -1,0 +1,22 @@
+body {
+    font-family: Merriweather, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-left: 20px solid #81f5ff;
+}
+
+header {
+    background-color: #ffd5e5;
+}
+
+main {
+    flex-grow: 1;
+    background-color: #ffffdd;
+}
+
+footer {
+    padding: 40px 0;
+    text-align:center;
+    background-color: #a0ffe6;
+}
