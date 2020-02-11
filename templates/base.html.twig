@@ -16,7 +16,17 @@
             <div class="container">
                 <nav>
                     <a href="{{ path('home') }}"><h1>Sortir.com</h1></a>
-
+                </nav>
+                <nav class="user-nav">
+                    {# if the user is connected #}
+                    {% if app.user %}
+                        <a href="#">{{ app.user.firstname }} {{ app.user.lastname }}</a>
+                        <a href="{{ path('security_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('security_login') }}">Connexion</a>
+                        {# @TODO: show only to admin #}
+                        <a href="{{ path('admin_user_create') }}">Créer un compte</a>
+                    {% endif %}
                 </nav>
             </div>
         </header>
