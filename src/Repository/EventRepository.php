@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TripState;
+use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method TripState|null find($id, $lockMode = null, $lockVersion = null)
- * @method TripState|null findOneBy(array $criteria, array $orderBy = null)
- * @method TripState[]    findAll()
- * @method TripState[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Event|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Event|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Event[]    findAll()
+ * @method Event[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TripStateRepository extends ServiceEntityRepository
+class EventRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TripState::class);
+        parent::__construct($registry, Event::class);
     }
 
     // /**
-    //  * @return TripState[] Returns an array of TripState objects
+    //  * @return Event[] Returns an array of Event objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TripStateRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TripState
+    public function findOneBySomeField($value): ?Event
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')
