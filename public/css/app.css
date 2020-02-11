@@ -6,6 +6,31 @@ body {
 }
 
 header {
+    padding: 10px 0;
+}
+
+header > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #CCC;
+}
+
+header .main-nav {
+    display: flex;
+    align-items: baseline;
+}
+
+header .main-nav a {
+    margin-right: 20px;
+}
+
+header .main-nav h1 {
+    margin-right: 30px;
+}
+
+header .user-nav a {
+    margin-left: 20px;
 }
 
 main {
