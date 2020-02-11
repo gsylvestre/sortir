@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les sorties{% endblock %}
+
+{% block body %}
+    <h2>Les sorties</h2>
+
+    {% if events %}
+        <table class="table table-striped">
+            <tr>
+                <th>Intitulé</th>
+                <th>Date de début</th>
+            </tr>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.startDate|date("d-m-Y à H:i") }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <div>Aucune sortie !</div>
+    {% endif %}
+{% endblock %}

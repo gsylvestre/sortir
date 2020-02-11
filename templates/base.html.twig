@@ -16,8 +16,8 @@
             <div class="container">
                 <nav class="main-nav">
                     <a href="{{ path('home') }}"><h1>Sortir.com</h1></a>
-                    <a href="#">Les sorties</a>
-                    <a href="#">Créer une sortie</a>
+                    <a href="{{ path('event_list') }}">Les sorties</a>
+                    <a href="{{ path('event_create') }}">Créer une sortie</a>
                 </nav>
                 <nav class="user-nav">
                     {# if the user is connected #}
@@ -32,8 +32,18 @@
                 </nav>
             </div>
         </header>
+
         <main>
             <div class="container">
+                {# read and display all flash messages #}
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
                 {% block body %}{% endblock %}
             </div>
         </main>
