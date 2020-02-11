@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -76,6 +78,28 @@ class User implements UserInterface
      * @ORM\Column(type="datetime")
      */
     private $createdDate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="author")
+     */
+    private $createdEvents;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SchoolSite", inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $school;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EventSubscription", mappedBy="user")
+     */
+    private $eventSubscriptions;
+
+    public function __construct()
+    {
+        $this->createdEvents = new ArrayCollection();
+        $this->eventSubscriptions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -219,6 +243,80 @@ class User implements UserInterface
     public function setCreatedDate(\DateTimeInterface $createdDate): self
     {
         $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getCreatedEvents(): Collection
+    {
+        return $this->createdEvents;
+    }
+
+    public function addCreatedEvent(Event $createdEvent): self
+    {
+        if (!$this->createdEvents->contains($createdEvent)) {
+            $this->createdEvents[] = $createdEvent;
+            $createdEvent->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedEvent(Event $createdEvent): self
+    {
+        if ($this->createdEvents->contains($createdEvent)) {
+            $this->createdEvents->removeElement($createdEvent);
+            // set the owning side to null (unless already changed)
+            if ($createdEvent->getAuthor() === $this) {
+                $createdEvent->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSchool(): ?SchoolSite
+    {
+        return $this->school;
+    }
+
+    public function setSchool(?SchoolSite $school): self
+    {
+        $this->school = $school;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EventSubscription[]
+     */
+    public function getEventSubscriptions(): Collection
+    {
+        return $this->eventSubscriptions;
+    }
+
+    public function addEventSubscription(EventSubscription $eventSubscription): self
+    {
+        if (!$this->eventSubscriptions->contains($eventSubscription)) {
+            $this->eventSubscriptions[] = $eventSubscription;
+            $eventSubscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventSubscription(EventSubscription $eventSubscription): self
+    {
+        if ($this->eventSubscriptions->contains($eventSubscription)) {
+            $this->eventSubscriptions->removeElement($eventSubscription);
+            // set the owning side to null (unless already changed)
+            if ($eventSubscription->getUser() === $this) {
+                $eventSubscription->setUser(null);
+            }
+        }
 
         return $this;
     }

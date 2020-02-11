@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\EventState;
 use App\Form\EventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +34,18 @@ class EventController extends AbstractController
     {
         $event = new Event();
         $eventForm = $this->createForm(EventType::class, $event);
+        $eventStateRepo = $this->getDoctrine()->getRepository(EventState::class);
 
         $eventForm->handleRequest($request);
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()){
+            //on donne l'état "créée" à cette sortie
+            $createdState = $eventStateRepo->findOneBy(['name' => 'created']);
+            $event->setState($createdState);
+
+            //on renseigne son auteur (le user actuel)
+            $event->setAuthor($this->getUser());
+
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($event);
             $manager->flush();
