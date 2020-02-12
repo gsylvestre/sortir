@@ -11,9 +11,10 @@
                 <th>ID</th>
                 <th>Intitulé</th>
                 <th>Statut</th>
-                <th>Nombre d'inscrits</th>
+                <th>Inscrits</th>
                 <th>Places restantes</th>
                 <th>Date de début</th>
+                <th>Organisé par</th>
                 <th>Action</th>
             </tr>
         {% for event in events %}
@@ -28,6 +29,7 @@
                     <td>&#8734;</td>
                 {% endif %}
                 <td>{{ event.startDate|date("d-m-Y à H:i") }}</td>
+                <td>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</td>
                 <td>
 
                         <a href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
