@@ -54,6 +54,7 @@ class Location
      */
     private $city;
 
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -166,4 +167,5 @@ class Location
 
         return $this;
     }
+
 }
