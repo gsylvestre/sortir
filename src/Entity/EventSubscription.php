@@ -3,12 +3,22 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\EventSubscriptionRepository")
  */
 class EventSubscription
 {
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->setCreatedDate(new \DateTime());
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -43,7 +53,7 @@ class EventSubscription
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?UserInterface $user): self
     {
         $this->user = $user;
 

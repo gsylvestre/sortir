@@ -220,4 +220,15 @@ class Event
 
         return $this;
     }
+
+    public function isSubscribed(UserInterface $user)
+    {
+        foreach($this->getSubscriptions() as $sub){
+            if ($sub->getUser()->getId() == $user->getId()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

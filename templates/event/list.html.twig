@@ -8,13 +8,31 @@
     {% if events %}
         <table class="table table-striped">
             <tr>
+                <th>ID</th>
                 <th>Intitulé</th>
+                <th>Statut</th>
+                <th>Nombre d'inscrits</th>
+                <th>Places restantes</th>
                 <th>Date de début</th>
+                <th>Action</th>
             </tr>
         {% for event in events %}
             <tr>
+                <td>{{ event.id }}</td>
                 <td>{{ event.name }}</td>
+                <td>{{ event.state.name }}</td>
+                <td>{{ event.subscriptions|length }}</td>
+                {% if event.maxRegistrations %}
+                    <td>{{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}</td>
+                {% else %}
+                    <td>&#8734;</td>
+                {% endif %}
                 <td>{{ event.startDate|date("d-m-Y à H:i") }}</td>
+                <td>
+
+                        <a href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
+
+                </td>
             </tr>
         {% endfor %}
         </table>
