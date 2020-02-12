@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\EventState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,7 +21,7 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-    public function search()
+    public function search(UserInterface $user, ?array $searchData)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e');
@@ -38,8 +39,46 @@ class EventRepository extends ServiceEntityRepository
         //la plus proche dans le temps en premier
         $qb->orderBy('e.startDate', 'ASC');
 
+        //recherche par mot-clef
+        if (!empty($searchData['keyword'])){
+            $qb->andWhere('e.name LIKE :kw')
+                ->setParameter('kw', '%'.$searchData['keyword'].'%');
+        }
+
         $query = $qb->getQuery();
         $results = $query->getResult();
+
+        $tempResults = [];
+
+        //sortie auxquelles je suis inscrit checkbox
+        if (!empty($searchData['subscribed_to'])){
+            $subscribedTo = array_filter($results, function($event) use ($user){
+                /** @var $event Event $sub */
+                foreach($event->getSubscriptions() as $sub){
+                    if ($sub->getUser()->getId() === $user->getId()){
+                        return true;
+                    }
+                }
+                return false;
+            });
+            $tempResults = array_merge($tempResults, $subscribedTo);
+        }
+
+        //sorties pas inscrits
+        if (!empty($searchData['not_subscribed_to'])){
+            $notSubscribedTo = array_filter($results, function($event) use ($user){
+                /** @var $event Event $sub */
+                foreach($event->getSubscriptions() as $sub){
+                    if ($sub->getUser()->getId() === $user->getId()){
+                        return false;
+                    }
+                }
+                return true;
+            });
+            $tempResults = array_merge($tempResults, $notSubscribedTo);
+        }
+
+        $results = $tempResults;
 
         return $results;
     }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\EventState;
+use App\Form\EventSearchType;
 use App\Form\EventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +18,20 @@ class EventController extends AbstractController
     /**
      * @Route("", name="list")
      */
-    public function list()
+    public function list(Request $request)
     {
+        //valeurs par défaut du formulaire de recherche
+        $searchData = ['subscribed_to' => true, 'not_subscribed_to' => true];
+        $searchForm = $this->createForm(EventSearchType::class, $searchData);
+        $searchForm->handleRequest($request);
+        $searchData = $searchForm->getData();
+
         $eventRepo = $this->getDoctrine()->getRepository(Event::class);
-        $events = $eventRepo->search();
+        $events = $eventRepo->search($this->getUser(), $searchData);
 
         return $this->render('event/list.html.twig', [
-            'events' => $events
+            'events' => $events,
+            'searchForm' => $searchForm->createView()
         ]);
     }
 

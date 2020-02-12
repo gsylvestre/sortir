@@ -5,6 +5,21 @@
 {% block body %}
     <h2>Les sorties</h2>
 
+    <div class="container ml-0 mr-0 pl-0 pr-0">
+            {{ form_start(searchForm, {'attr': {'class': 'row'}}) }}
+            <div class="col col-sm">
+                {{ form_row(searchForm.keyword) }}
+            </div>
+            <div class="col col-sm">
+                {{ form_row(searchForm.subscribed_to) }}
+                {{ form_row(searchForm.not_subscribed_to) }}
+            </div>
+            <div class="col col-sm">
+                {{ form_row(searchForm.submit) }}
+            </div>
+            {{ form_end(searchForm) }}
+    </div>
+
     {% if events %}
         <table class="table table-striped">
             <tr>
