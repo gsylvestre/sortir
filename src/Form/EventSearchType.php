@@ -2,8 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\SchoolSite;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,7 +18,13 @@ class EventSearchType extends AbstractType
     {
         $builder
             ->setMethod('get')
-            ->add('keyword', TextType::class, [
+            ->add('school_site', EntityType::class, [
+                'label' => 'Site',
+                'class' => SchoolSite::class,
+                'choice_label' => 'name',
+                'required' => false,
+            ])
+            ->add('keyword', SearchType::class, [
                 'label' => 'Mots-clefs',
                 'required' => false,
             ])

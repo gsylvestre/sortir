@@ -8,6 +8,7 @@
     <div class="container ml-0 mr-0 pl-0 pr-0">
             {{ form_start(searchForm, {'attr': {'class': 'row'}}) }}
             <div class="col col-sm">
+                {{ form_row(searchForm.school_site) }}
                 {{ form_row(searchForm.keyword) }}
             </div>
             <div class="col col-sm">
@@ -30,6 +31,7 @@
                 <th>Places restantes</th>
                 <th>Date de début</th>
                 <th>Organisé par</th>
+                <th>École</th>
                 <th>Action</th>
             </tr>
         {% for event in events %}
@@ -45,6 +47,7 @@
                 {% endif %}
                 <td>{{ event.startDate|date("d-m-Y à H:i") }}</td>
                 <td>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</td>
+                <td>{{ event.author.school.name }}</td>
                 <td>
 
                         <a href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>

@@ -34,7 +34,9 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('state', $openState);
 
         $qb->leftJoin('e.subscriptions', 'sub')
-            ->addSelect('sub');
+            ->addSelect('sub')
+            ->leftJoin('e.author', 'auth')
+            ->addSelect('auth');
 
         //la plus proche dans le temps en premier
         $qb->orderBy('e.startDate', 'ASC');
@@ -45,9 +47,16 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('kw', '%'.$searchData['keyword'].'%');
         }
 
+        //filtre par site
+        if (!empty($searchData['school_site'])){
+            $qb->andWhere('auth.school = :school')
+                ->setParameter('school', $searchData['school_site']);
+        }
+
         $query = $qb->getQuery();
         $results = $query->getResult();
 
+        //à partir d'ici, je filtre les résultats en PHP
         $tempResults = [];
 
         //sortie auxquelles je suis inscrit checkbox
