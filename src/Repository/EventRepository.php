@@ -28,10 +28,16 @@ class EventRepository extends ServiceEntityRepository
 
         $stateRepo = $this->getEntityManager()->getRepository(EventState::class);
 
-        //que les sorties ouvertes par défaut
+        //que les sorties ouvertes par défaut + sorties créées par moi
         $openState = $stateRepo->findOneBy(['name' => 'open']);
-        $qb->andWhere('e.state = :state')
-            ->setParameter('state', $openState);
+        $createdState = $stateRepo->findOneBy(['name' => 'created']);
+        $qb->andWhere('
+            e.state = :openState 
+            OR (e.state = :createdState AND e.author = :user)
+        ')
+            ->setParameter('openState', $openState)
+            ->setParameter('user', $user)
+            ->setParameter('createdState', $createdState);
 
         $qb->leftJoin('e.subscriptions', 'sub')
             ->addSelect('sub')

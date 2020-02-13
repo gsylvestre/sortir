@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use App\Entity\Location;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,6 +22,11 @@ class EventType extends AbstractType
             ->add('duration', IntegerType::class, ['label' => 'Durée, en heures'])
             ->add('registrationLimitDate', null, ['label' => "Date limite d'inscription", 'date_widget' => 'single_text'])
             ->add('maxRegistrations', IntegerType::class, ['label' => 'Nombre max de participants'])
+            ->add('location', EntityType::class, [
+                'label' => 'Lieu',
+                'class' => Location::class,
+                'choice_label' => 'name',
+            ])
             ->add('submit', SubmitType::class, ['label' => 'Créer'])
         ;
     }
