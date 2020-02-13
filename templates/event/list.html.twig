@@ -49,9 +49,15 @@
                 <td>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</td>
                 <td>{{ event.author.school.name }}</td>
                 <td>
-
+                    {% if event.state.name == 'open' %}
                         <a href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
-
+                    {% elseif event.state.name == 'created' and event.author == app.user %}
+                        <a href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>
+                        <a href="#">Modifier</a>
+                    {% endif %}
+                    {% if event.author == app.user %}
+                        <a href="{{ path('event_cancel', {'id': event.id}) }}">Annuler</a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

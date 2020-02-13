@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\EventState;
+use App\EventState\EventStateHelper;
 use App\Form\EventSearchType;
 use App\Form\EventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,5 +66,24 @@ class EventController extends AbstractController
         return $this->render('event/create.html.twig', [
             'eventForm' => $eventForm->createView()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/publier", name="publish")
+     */
+    public function publish(Event $event, EventStateHelper $stateHelper)
+    {
+        $stateHelper->changeEventState($event, "open");
+        return $this->redirectToRoute('event_list');
+    }
+
+
+    /**
+     * @Route("/{id}/annuler", name="cancel")
+     */
+    public function cancel(Event $event, EventStateHelper $stateHelper)
+    {
+        $stateHelper->changeEventState($event, "canceled");
+        return $this->redirectToRoute('event_list');
     }
 }
