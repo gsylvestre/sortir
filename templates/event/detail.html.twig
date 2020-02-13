@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>#{{ event.id }} {{ event.name }}</h2>
+    <div>{{ event.infos|nl2br }}</div>
+
+    <div>Nombre d'inscrits : {{ event.subscriptions|length }}</div>
+
+    <div>Inscription maximum :
+    {% if event.maxRegistrations %}
+        {{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}
+    {% else %}
+        &#8734;
+    {% endif %}
+    </div>
+    <div>{{ event.startDate|date("d-m-Y à H:i") }}</div>
+    <div>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</div>
+    <div>{{ event.author.school.name }}</div>
+    <div>
+        {% if event.state.name == 'open' %}
+            <a class="btn btn-{{ event.isSubscribed(app.user) ? "danger" : "success" }}" href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
+        {% elseif event.state.name == 'created' and event.author == app.user %}
+            <a href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>
+            <a href="#">Modifier</a>
+        {% endif %}
+        {% if event.author == app.user %}
+            <a href="{{ path('event_cancel', {'id': event.id}) }}">Annuler</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block title %}{{ event.name }}{% endblock %}
+

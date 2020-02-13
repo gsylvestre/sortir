@@ -24,7 +24,6 @@
     {% if events %}
         <table class="table table-striped">
             <tr>
-                <th>ID</th>
                 <th>Intitulé</th>
                 <th>Statut</th>
                 <th>Inscrits</th>
@@ -36,8 +35,7 @@
             </tr>
         {% for event in events %}
             <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.name }}</td>
+                <td><a href="{{ path('event_detail', {'id': event.id}) }}">#{{ event.id }} {{ event.name }}</a></td>
                 <td>{{ event.state.name }}</td>
                 <td>{{ event.subscriptions|length }}</td>
                 {% if event.maxRegistrations %}

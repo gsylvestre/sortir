@@ -231,4 +231,13 @@ class Event
 
         return false;
     }
+
+    public function isMaxedOut()
+    {
+        if ($this->getMaxRegistrations() && $this->getSubscriptions()->count() >= $this->getMaxRegistrations()){
+            return true;
+        }
+
+        return false;
+    }
 }

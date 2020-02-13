@@ -37,6 +37,16 @@ class EventController extends AbstractController
     }
 
     /**
+     * @Route("/details/{id}", name="detail")
+     */
+    public function detail(Event $event)
+    {
+         return $this->render('event/detail.html.twig', [
+            'event' => $event,
+        ]);
+    }
+
+    /**
      * @Route("/ajout", name="create")
      */
     public function create(Request $request)
