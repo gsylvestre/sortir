@@ -22,13 +22,15 @@
         <link rel="stylesheet" href="{{ asset('css/theme.min.css') }}">
 
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+        <link rel="icon" href="{{ asset('img/favicon.png') }}">
     </head>
     <body>
 
         <header class="bg-primary text-white">
             <div class="container-fluid">
                 <nav class="main-nav">
-                    <a href="{{ path('home') }}"><h1>Sortir.com</h1></a>
+                    <a href="{{ path('home') }}"><img src="{{ asset('img/favicon.png') }}"><h1>Sortir.com</h1></a>
                     <a href="{{ path('event_list') }}">Les sorties</a>
                     <a href="{{ path('event_create') }}">Créer une sortie</a>
                 </nav>
@@ -62,7 +64,7 @@
         </main>
         <footer id="super-footer" class="bg-primary text-white mt-5">
             <div class="container-fluid">
-                &copy;{{ "now"|date("Y") }} ENI
+                &copy;{{ "now"|date("Y") }} ENI <img class="footer-logo" src="{{ asset('img/favicon.png') }}">
             </div>
         </footer>
 

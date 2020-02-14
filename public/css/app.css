@@ -34,7 +34,15 @@ header .main-nav a {
 }
 
 header .main-nav h1 {
-    margin-right: 30px;
+    margin: 0 30px 0 35px;
+}
+
+header img {
+    height: 52px;
+    position: absolute;
+    top: -6px;
+    left: -7px;
+    transform: rotate(15deg);
 }
 
 header .user-nav a {
@@ -48,6 +56,11 @@ main {
 footer {
     padding: 40px 0;
     text-align:center;
+}
+
+.footer-logo {
+    transform: rotate(-15deg) scaleX(-1);
+    margin-left: 30px;
 }
 
 #map {
