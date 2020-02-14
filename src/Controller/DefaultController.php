@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Geolocation\MapBoxHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +14,13 @@ class DefaultController extends AbstractController
      */
     public function home(MapBoxHelper $mapbox)
     {
-        $data = $mapbox->getAddressCoordinates("Centre atlantis", "", "saint-herblain");
-        dump($data);
+        $eventRepo = $this->getDoctrine()->getRepository(Event::class);
+        $allEventCount = $eventRepo->count([]);
+
 
         return $this->render('default/home.html.twig', [
+            "allEventCount" => $allEventCount,
+
         ]);
     }
 }
