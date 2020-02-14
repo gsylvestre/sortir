@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Annulation de la sortie <em>{{ event.name }}</em></h2>
+
+    {{ form_start(cancelForm) }}
+    {{ form_widget(cancelForm) }}
+    <button class="btn btn-danger">Annuler la sortie :(</button>
+    {{ form_end(cancelForm) }}
+
+{% endblock %}
+
+{% block title %}Annuler la sortie{% endblock %}
+

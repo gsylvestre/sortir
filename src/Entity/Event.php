@@ -72,6 +72,11 @@ class Event
      */
     private $subscriptions;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\EventCancelation", mappedBy="event", cascade={"persist", "remove"})
+     */
+    private $cancelation;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -259,5 +264,22 @@ class Event
             $endDate->setTime(23, 59, 59);
         }
         return $endDate;
+    }
+
+    public function getCancelation(): ?EventCancelation
+    {
+        return $this->cancelation;
+    }
+
+    public function setCancelation(EventCancelation $cancelation): self
+    {
+        $this->cancelation = $cancelation;
+
+        // set the owning side of the relation if necessary
+        if ($cancelation->getEvent() !== $this) {
+            $cancelation->setEvent($this);
+        }
+
+        return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace App\Command;
 use App\Entity\Event;
 use App\EventState\EventStateHelper;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,11 +20,14 @@ class UpdateEventStatesCommand extends Command
     /** @var EntityManagerInterface */
     private $em;
 
+    private $logger;
+
     /** @var EventStateHelper */
     private $stateHelper;
 
-    public function __construct(EntityManagerInterface $em, EventStateHelper $stateHelper, string $name = null)
+    public function __construct(EntityManagerInterface $em, EventStateHelper $stateHelper, LoggerInterface $logger, string $name = null)
     {
+        $this->logger = $logger;
         $this->em = $em;
         $this->stateHelper = $stateHelper;
         parent::__construct($name);
@@ -39,6 +42,8 @@ class UpdateEventStatesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->logger->info('event states update started');
+
         $io = new SymfonyStyle($input, $output);
 
         $eventRepo = $this->em->getRepository(Event::class);
@@ -47,26 +52,35 @@ class UpdateEventStatesCommand extends Command
         foreach($events as $event) {
             if ($this->stateHelper->shouldChangeStateToClosed($event)){
                 $this->stateHelper->changeEventState($event, "closed");
-                $io->writeln($event->getId() . " " . $event->getName() . " : statut changé en closed");
+                $message = $event->getId() . " " . $event->getName() . " : statut changé en closed";
+                $io->writeln($message);
+                $this->logger->info($message);
             }
 
             if ($this->stateHelper->shouldChangeStateToOngoing($event)){
                 $this->stateHelper->changeEventState($event, "ongoing");
-                $io->writeln($event->getId() . " " . $event->getName() . " : statut changé en ongoing");
+                $message = $event->getId() . " " . $event->getName() . " : statut changé en ongoing";
+                $io->writeln($message);
+                $this->logger->info($message);
             }
 
             if ($this->stateHelper->shouldChangeStateToEnded($event)){
                 $this->stateHelper->changeEventState($event, "ended");
-                $io->writeln($event->getId() . " " . $event->getName() . " : statut changé en ended");
+                $message = $event->getId() . " " . $event->getName() . " : statut changé en ended";
+                $io->writeln($message);
+                $this->logger->info($message);
             }
 
             if ($this->stateHelper->shouldChangeStateToArchived($event)){
                 $this->stateHelper->changeEventState($event, "archived");
-                $io->writeln($event->getId() . " " . $event->getName() . " : statut changé en archived");
+                $message = $event->getId() . " " . $event->getName() . " : statut changé en archived";
+                $io->writeln($message);
+                $this->logger->info($message);
             }
         }
 
         $io->success("OK c'est fait !");
+        $this->logger->info('event states update ended');
 
         return 0;
     }

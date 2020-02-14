@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\EventCancelation;
 use App\Entity\EventState;
 use App\EventState\EventStateHelper;
+use App\Form\EventCancelationType;
 use App\Form\EventSearchType;
 use App\Form\EventType;
 use App\Form\LocationType;
@@ -100,9 +102,30 @@ class EventController extends AbstractController
     /**
      * @Route("/{id}/annuler", name="cancel")
      */
-    public function cancel(Event $event, EventStateHelper $stateHelper)
+    public function cancel(Event $event, EventStateHelper $stateHelper, Request $request)
     {
-        $stateHelper->changeEventState($event, "canceled");
-        return $this->redirectToRoute('event_list');
+        $eventCancelation = new EventCancelation();
+        $eventCancelation->setEvent($event);
+        $eventCancelation->setCancelDate(new \DateTime());
+        $cancelForm = $this->createForm(EventCancelationType::class, $eventCancelation);
+
+        $cancelForm->handleRequest($request);
+        if ($cancelForm->isSubmitted() && $cancelForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($eventCancelation);
+            $em->flush();
+
+            //@TODO: prévenir les inscrits que la sortie a été annulée !
+
+            $stateHelper->changeEventState($event, "canceled");
+
+            $this->addFlash('success', 'La sortie a bien été annulée.');
+            return $this->redirectToRoute('event_detail', ['id' => $event->getId()]);
+        }
+
+        return $this->render('event/cancel.html.twig', [
+            'event' => $event,
+            'cancelForm' => $cancelForm->createView()
+        ]);
     }
 }

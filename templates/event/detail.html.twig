@@ -2,6 +2,7 @@
 
 {% block body %}
     <h2>#{{ event.id }} {{ event.name }}</h2>
+    <h3>État de la sortie : {{ event.state.name }}</h3>
     <div>{{ event.infos|nl2br }}</div>
 
     <div>Nombre d'inscrits : {{ event.subscriptions|length }}</div>

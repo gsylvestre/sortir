@@ -45,7 +45,10 @@ class EventStateHelper
     public function shouldChangeStateToArchived(Event $event): bool
     {
         $oneMonthAgo = new \DateTime("-1 month");
-        if ($event->getEndDate() < $oneMonthAgo){
+        if (
+            $event->getEndDate() < $oneMonthAgo &&
+            $event->getState()->getName() !== "archived"
+        ){
             return true;
         }
 
@@ -65,7 +68,8 @@ class EventStateHelper
         if (
             $event->getState()->getName() === "closed" &&
             $event->getStartDate() < $now &&
-            $event->getEndDate() > $now
+            $event->getEndDate() > $now &&
+            $event->getState()->getName() !== "ongoing"
         ){
             return true;
         }
@@ -85,7 +89,8 @@ class EventStateHelper
         $now = new \DateTime();
         if (
             $event->getState()->getName() === "ongoing" &&
-            $event->getEndDate() < $now
+            $event->getEndDate() < $now &&
+            $event->getState()->getName() !== "ended"
         ){
             return true;
         }
@@ -105,7 +110,8 @@ class EventStateHelper
         $now = new \DateTime();
         if (
             $event->getState()->getName() === "open" &&
-            $event->getRegistrationLimitDate() <= $now
+            $event->getRegistrationLimitDate() <= $now &&
+            $event->getState()->getName() !== "closed"
         ){
             return true;
         }
