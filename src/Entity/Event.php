@@ -221,7 +221,7 @@ class Event
         return $this;
     }
 
-    public function isSubscribed(UserInterface $user)
+    public function isSubscribed(UserInterface $user): bool
     {
         foreach($this->getSubscriptions() as $sub){
             if ($sub->getUser()->getId() == $user->getId()){
@@ -232,12 +232,32 @@ class Event
         return false;
     }
 
-    public function isMaxedOut()
+    public function isMaxedOut(): bool
     {
         if ($this->getMaxRegistrations() && $this->getSubscriptions()->count() >= $this->getMaxRegistrations()){
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Calcule la date de fin de l'événement en fonction de sa durée
+     *
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public function getEndDate(): \DateTimeInterface
+    {
+        $endDate = clone $this->getStartDate();
+
+        if ($this->getDuration()){
+            $durationInterval = new \DateInterval("PT".$this->getDuration()."H");
+            $endDate = $endDate->add($durationInterval);
+        }
+        else {
+            $endDate->setTime(23, 59, 59);
+        }
+        return $endDate;
     }
 }

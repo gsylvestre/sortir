@@ -53,6 +53,10 @@ class EventController extends AbstractController
     public function create(Request $request)
     {
         $event = new Event();
+        //avec des heures par défaut...
+        $event->setStartDate((new \DateTimeImmutable())->setTime(17, 0));
+        $event->setRegistrationLimitDate($event->getStartDate()->sub(new \DateInterval("PT1H")));
+
         $eventForm = $this->createForm(EventType::class, $event);
         $eventStateRepo = $this->getDoctrine()->getRepository(EventState::class);
 

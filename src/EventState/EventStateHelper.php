@@ -34,4 +34,82 @@ class EventStateHelper
         $em->persist($event);
         $em->flush();
     }
+
+    /**
+     *
+     * Retourne un booléen en fonction de si la sortie devrait être archivée
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function shouldChangeStateToArchived(Event $event): bool
+    {
+        $oneMonthAgo = new \DateTime("-1 month");
+        if ($event->getEndDate() < $oneMonthAgo){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * Retourne un booléen en fonction de si la sortie devrait être classée comme "en cours"
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function shouldChangeStateToOngoing(Event $event): bool
+    {
+        $now = new \DateTime();
+        if (
+            $event->getState()->getName() === "closed" &&
+            $event->getStartDate() < $now &&
+            $event->getEndDate() > $now
+        ){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * Retourne un booléen en fonction de si la sortie devrait être classée comme "terminée"
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function shouldChangeStateToEnded(Event $event): bool
+    {
+        $now = new \DateTime();
+        if (
+            $event->getState()->getName() === "ongoing" &&
+            $event->getEndDate() < $now
+        ){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * Retourne un booléen en fonction de si la sortie devrait être classée comme "fermée"
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function shouldChangeStateToClosed(Event $event): bool
+    {
+        $now = new \DateTime();
+        if (
+            $event->getState()->getName() === "open" &&
+            $event->getRegistrationLimitDate() <= $now
+        ){
+            return true;
+        }
+
+        return false;
+    }
 }

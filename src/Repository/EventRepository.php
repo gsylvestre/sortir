@@ -31,11 +31,14 @@ class EventRepository extends ServiceEntityRepository
         //que les sorties ouvertes par défaut + sorties créées par moi
         $openState = $stateRepo->findOneBy(['name' => 'open']);
         $createdState = $stateRepo->findOneBy(['name' => 'created']);
+        $closedState = $stateRepo->findOneBy(['name' => 'closed']);
+
         $qb->andWhere('
-            e.state = :openState 
-            OR (e.state = :createdState AND e.author = :user)
+            e.state = :openState OR e.state = :closedState 
+            OR (e.state = :createdState AND e.author = :user) 
         ')
             ->setParameter('openState', $openState)
+            ->setParameter('closedState', $closedState)
             ->setParameter('user', $user)
             ->setParameter('createdState', $createdState);
 
