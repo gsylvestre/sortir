@@ -5,6 +5,66 @@
 {% block body %}
     <h3>Créer une sortie !</h3>
 
-    {{ form(eventForm) }}
+    {{ form_start(eventForm) }}
+    {{ form_row(eventForm.name) }}
+    {{ form_row(eventForm.infos) }}
+    {{ form_row(eventForm.startDate) }}
+    {{ form_row(eventForm.duration) }}
+    {{ form_row(eventForm.registrationLimitDate) }}
+    {{ form_row(eventForm.maxRegistrations) }}
+    <div>{{ form_label(eventForm.location) }} <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#locationModal">+</button></div>
+    {{ form_widget(eventForm.location) }}
+    {{ form_errors(eventForm.location) }}
 
+
+    {{ form_end(eventForm) }}
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="locationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalLabel">Ajouter un nouveau lieu de sortie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(locationForm, {'attr' : {'id': 'location_form'}}) }}
+                    {{ form_widget(locationForm) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">GO</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+                {{ form_end(locationForm) }}
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $("#location_form").on("submit", function(e){
+            e.preventDefault();
+            $.ajax({
+                //ne marche que parce que je ne suis pas dans un fichier js externe
+                "url": "{{ path('location_create') }}",
+                "data": $("#location_form").serialize(),
+                "method": "post"
+            })
+            .done(function(response){
+                console.log(response);
+                var option = $("<option>").attr("value", response.location.id);
+                option.html(response.location.name);
+                option.prop('selected', true);
+                $("#event_location").prepend(option);
+                $('#locationModal').modal('hide');
+            });
+        });
+    </script>
 {% endblock %}

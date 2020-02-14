@@ -9,8 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LocationRepository")
  */
-class Location
+class Location implements \JsonSerializable
 {
+    public function jsonSerialize()
+    {
+        return [
+            "id" => $this->getId(),
+            "name" => $this->getName(),
+            "street" => $this->getStreet(),
+            "lat" => $this->getLatitude(),
+            "lng" => $this->getLongitude(),
+            "zip" => $this->getZip(),
+            "city" => $this->getCity(),
+        ];
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

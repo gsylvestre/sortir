@@ -7,6 +7,7 @@ use App\Entity\EventState;
 use App\EventState\EventStateHelper;
 use App\Form\EventSearchType;
 use App\Form\EventType;
+use App\Form\LocationType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -73,8 +74,12 @@ class EventController extends AbstractController
             return $this->redirectToRoute('event_list');
         }
 
+        //formulaire de location, pas traité ici !
+        $locationForm = $this->createForm(LocationType::class);
+
         return $this->render('event/create.html.twig', [
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'locationForm' => $locationForm->createView()
         ]);
     }
 
