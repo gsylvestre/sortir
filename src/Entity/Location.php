@@ -24,6 +24,11 @@ class Location implements \JsonSerializable
         ];
     }
 
+    public function __toString()
+    {
+        return $this->getName() . "<br>". $this->getStreet() . " " . $this->getCity();
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

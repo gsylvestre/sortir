@@ -6,14 +6,22 @@ body {
 }
 
 header {
-    padding: 10px 0;
+    padding: 10px 0 0 0;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 1.4rem;
+}
+
+header a {
+    color: #FFF;
 }
 
 header > div {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    border-bottom: 1px solid #CCC;
 }
 
 header .main-nav {
@@ -41,3 +49,9 @@ footer {
     padding: 40px 0;
     text-align:center;
 }
+
+#map {
+    height: 500px;
+    width: 100%;
+}
+

@@ -27,8 +27,6 @@ class EventType extends AbstractType
                 'class' => Location::class,
                 'choice_label' => 'name',
             ])
-            ->add('street', null, ['mapped' => false])
-            ->add('submit', SubmitType::class, ['label' => 'Créer'])
         ;
     }
 

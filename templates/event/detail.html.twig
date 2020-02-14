@@ -27,6 +27,29 @@
             <a href="{{ path('event_cancel', {'id': event.id}) }}">Annuler</a>
         {% endif %}
     </div>
+
+    {% if event.location.longitude %}
+    <div id="map"></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/gsylvestre/ck6lxcmxf0fv61irviqd3z0cd', // stylesheet location
+            center: [{{ event.location.longitude }}, {{ event.location.latitude }}], // starting position [lng, lat]
+            zoom: 13 // starting zoom
+        });
+
+        // create the popup
+        var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+            "<h5>{{ event.location.name }}</h5>{{ event.location.street }} {{ event.location.city }} "
+        );
+
+        var marker = new mapboxgl.Marker();
+        marker.setPopup(popup);
+        marker.setLngLat([{{ event.location.longitude }}, {{ event.location.latitude }}]);
+        marker.addTo(map);
+    </script>
+    {% endif %}
 {% endblock %}
 
 {% block title %}{{ event.name }}{% endblock %}
