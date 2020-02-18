@@ -32,7 +32,7 @@ abstract class AbstractController extends WebTestCase
 
         // you may need to use a different token class depending on your application.
         // for example, when using Guard authentication you must instantiate PostAuthenticationGuardToken
-        $user = self::$container->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'pif@pif.com']);
+        $user = self::$container->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'yo@yo.com']);
         $token = new UsernamePasswordToken($user, null, $firewallName, ["ROLE_USER"]);
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();

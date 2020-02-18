@@ -21,7 +21,6 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 

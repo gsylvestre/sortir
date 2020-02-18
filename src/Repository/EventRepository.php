@@ -45,7 +45,9 @@ class EventRepository extends ServiceEntityRepository
         $qb->leftJoin('e.subscriptions', 'sub')
             ->addSelect('sub')
             ->leftJoin('e.author', 'auth')
-            ->addSelect('auth');
+            ->addSelect('auth')
+            ->leftJoin('e.cancelation', 'canc')
+            ->addSelect('canc');
 
         //la plus proche dans le temps en premier
         $qb->orderBy('e.startDate', 'ASC');

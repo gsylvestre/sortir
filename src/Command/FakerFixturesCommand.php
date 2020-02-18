@@ -85,6 +85,7 @@ class FakerFixturesCommand extends Command
         $this->progress->setMessage("loading users");
         $allSchoolSites = $this->doctrine->getRepository(SchoolSite::class)->findAll();
 
+        //simple user
         $yo = new User();
         $hash = $this->passwordEncoder->encodePassword($yo, "yoyoyo");
         $yo->setPassword($hash);
@@ -92,12 +93,27 @@ class FakerFixturesCommand extends Command
         $yo->setFirstname( "yo" );
         $yo->setPhone( "0601020304" );
         $yo->setEmail("yo@yo.com");
-        $yo->setIsAdmin( 1 );
+        $yo->setIsAdmin( 0 );
         $yo->setIsActive( 1 );
         $yo->setCreatedDate( new \DateTime() );
         $yo->setSchool( $this->faker->randomElement($allSchoolSites) );
 
         $this->doctrine->getManager()->persist($yo);
+
+        //admin user
+        $admin = new User();
+        $hash = $this->passwordEncoder->encodePassword($admin, "admin");
+        $admin->setPassword($hash);
+        $admin->setLastname( "admin" );
+        $admin->setFirstname( "admin" );
+        $admin->setPhone( "0601020304" );
+        $admin->setEmail("admin@admin.com");
+        $admin->setIsAdmin( 1 );
+        $admin->setIsActive( 1 );
+        $admin->setCreatedDate( new \DateTime() );
+        $admin->setSchool( $this->faker->randomElement($allSchoolSites) );
+
+        $this->doctrine->getManager()->persist($admin);
 
         for($i=0; $i<$num; $i++){
             $user = new User();

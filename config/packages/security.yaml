@@ -21,6 +21,9 @@ security:
                 path: security_logout
                 target: home
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
     access_control:
         - { path: ^/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # pour l'instant :
