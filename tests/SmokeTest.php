@@ -16,6 +16,7 @@ class SmokeTest extends AbstractController
 
     /**
      * @dataProvider provideUrls
+     * @dataProvider provideBackOfficeUrls
      */
     public function testPageRedirectToLoginIfNotConnected($url)
     {
@@ -23,12 +24,42 @@ class SmokeTest extends AbstractController
         $this->assertResponseRedirects("/connexion", 302, 'page should redirect if not connected');
     }
 
+    /**
+     * @dataProvider provideBackOfficeUrls
+     */
+    public function testBackOfficeIsLockedWithWrongRole($url)
+    {
+        $user = $this->login(false);
+
+        $crawler = $this->client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403, "should be blocked");
+    }
+
+    /**
+     * @dataProvider provideBackOfficeUrls
+     */
+    public function testBackOfficeIsUnlockedForAdmins($url)
+    {
+        $user = $this->login(true);
+
+        $crawler = $this->client->request('GET', $url);
+        $this->assertResponseIsSuccessful('response should be succesfull 200');
+    }
+
+
     public function provideUrls()
     {
         return [
             ["/"],
             ["/sorties"],
             ["/sorties/ajout"],
+        ];
+    }
+
+    public function provideBackOfficeUrls()
+    {
+        return [
+            ["/admin/utilisateurs/ajout"],
         ];
     }
 }
