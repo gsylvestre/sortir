@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\ProfileType;
-use App\Form\RegistrationFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/profil")
@@ -19,7 +16,7 @@ class UserController extends AbstractController
     /**
      * @Route("/modification", name="user_edit")
      */
-    public function edit(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function edit(Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
