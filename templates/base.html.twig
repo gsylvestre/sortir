@@ -37,7 +37,7 @@
                 <nav class="user-nav">
                     {# if the user is connected #}
                     {% if app.user %}
-                        <a href="#">{{ app.user.firstname }} {{ app.user.lastname }}</a>
+                        <a href="{{ path('user_edit') }}">{{ app.user.firstname }} {{ app.user.lastname }}</a>
                         <a href="{{ path('security_logout') }}">Déconnexion</a>
                     {% else %}
                         <a href="{{ path('security_login') }}">Connexion</a>
