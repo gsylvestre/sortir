@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Permet de conserver en bdd les raisons d'annulation d'une sortie
+ *
  * @ORM\Entity(repositoryClass="App\Repository\EventCancelationRepository")
  */
 class EventCancelation

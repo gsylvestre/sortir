@@ -9,8 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LocationRepository")
  */
-class Location implements \JsonSerializable
+class Location implements \JsonSerializable //comment doit-être convertie cette classe en JSON ?
 {
+    //comme ça
     public function jsonSerialize()
     {
         return [
@@ -24,6 +25,11 @@ class Location implements \JsonSerializable
         ];
     }
 
+    /**
+     * Comment doit-être convertie cette classe en chaîne ?
+     *
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() . "<br>". $this->getStreet() . " " . $this->getCity();

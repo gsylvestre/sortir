@@ -9,6 +9,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * Utilisateur du site, admin ou user
+ *
+ * Callback de cycle de vie Doctrine
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -16,10 +19,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     /**
+     * Appelée automatiquement avant de faire un INSERT
+     *
      * @ORM\PrePersist()
      */
     public function prePersist()
     {
+        //affecte un rôle en fonction du booléen... un peu inutile ce booléen
         $role = ($this->getIsAdmin()) ? "ROLE_ADMIN" : "ROLE_USER";
         $this->setRoles([$role]);
 

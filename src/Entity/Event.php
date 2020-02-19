@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+//@TODO: validation !
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
  */
@@ -226,6 +228,12 @@ class Event
         return $this;
     }
 
+    /**
+     * Teste si un User est inscrit à cette sortie
+     *
+     * @param UserInterface $user
+     * @return bool
+     */
     public function isSubscribed(UserInterface $user): bool
     {
         foreach($this->getSubscriptions() as $sub){
@@ -237,6 +245,11 @@ class Event
         return false;
     }
 
+    /**
+     * Teste si cette sortie est complète
+     *
+     * @return bool
+     */
     public function isMaxedOut(): bool
     {
         if ($this->getMaxRegistrations() && $this->getSubscriptions()->count() >= $this->getMaxRegistrations()){

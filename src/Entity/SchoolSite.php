@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Site d'école
+ *
  * @ORM\Entity(repositoryClass="App\Repository\SchoolSiteRepository")
  */
 class SchoolSite

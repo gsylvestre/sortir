@@ -6,12 +6,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * Représente une inscription d'un user à une sortie
+ *
+ * Le HasLifecycleCallbacks() permet d'utiliser les événements doctrine. Voir prePersist ci-dessous
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\EventSubscriptionRepository")
  */
 class EventSubscription
 {
     /**
+     * Sera appelée à chaque fois avant de faire un INSERT en bdd
+     *
      * @ORM\PrePersist()
      */
     public function prePersist()

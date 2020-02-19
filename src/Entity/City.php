@@ -7,10 +7,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ *
+ *
  * @ORM\Entity(repositoryClass="App\Repository\CityRepository")
  */
-class City implements \JsonSerializable
+class City implements \JsonSerializable  //le implements \JsonSerializable permet de définir les données restituées si on json_encode une entité de cette classe
 {
+    //les données retournées ici seront sérialisée en json si on appelle json_encode sur cette classe
     public function jsonSerialize()
     {
         return [
@@ -20,6 +23,12 @@ class City implements \JsonSerializable
         ];
     }
 
+    /**
+     * Cette méthode sera appelée si on fait un "echo" sur la classe elle-même
+     * Utile dans les formulaires avec le champ EntityType
+     *
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->name;

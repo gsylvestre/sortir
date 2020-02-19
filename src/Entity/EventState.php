@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Représente un état d'une sortie
+ *
  * @ORM\Entity(repositoryClass="App\Repository\EventStateRepository")
  */
 class EventState
