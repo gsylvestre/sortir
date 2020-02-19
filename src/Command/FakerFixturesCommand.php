@@ -20,6 +20,14 @@ use App\Entity\Location;
 use App\Entity\Event;
 use App\Entity\EventSubscription;
 
+/**
+ * Cette commande permet de générer plein de données bidon.
+ * La grosse base a été générée par l'extraordinaire package : gsylvestre/symfony-faker-fixtures :)
+ * Attention : rien à voir avec les fixtures de Doctrine !!!
+ *
+ * Class FakerFixturesCommand
+ * @package App\Command
+ */
 class FakerFixturesCommand extends Command
 {
     protected static $defaultName = 'app:fixtures:load';
@@ -38,6 +46,7 @@ class FakerFixturesCommand extends Command
     public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, $name = null)
     {
         parent::__construct($name);
+        //faker nous permet de générer des données réalistes, en français
         $this->faker = \Faker\Factory::create("fr_FR");
         $this->doctrine = $doctrine;
         $this->passwordEncoder = $passwordEncoder;
@@ -48,44 +57,62 @@ class FakerFixturesCommand extends Command
         $this->setDescription('Load all fixtures');
     }
 
+    /**
+     * Cette méthode est exécuté quand on fait : php bin/console app:fixtures:load
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
 
+        //on continue que si c'est confirmé par le dév
         $confirmed = $this->io->confirm('This will delete all your database datas. Continue?', false);
         if (!$confirmed){
             $this->io->text("Ok then.");
             return 0;
         }
 
+        //petite barre qui tourne dans la console
         $this->progress = new ProgressIndicator($output);
         $this->progress->start('Loading fixtures');
 
-        //empty all tables, reset ids
+        //vide presque toutes les tables. Voir la méthode plus bas.
         $this->truncateTables();
 
-        //order might be important
-        //change argument to load more or less of each entity
+        //l'ordre est important ici
         $this->loadUsers($num = 50);
         $this->loadLocations($num = 30);
         $this->loadEvents($num = 100);
         $this->loadEventSubscriptions($num = 500);
 
-        //now loading ManyToMany data
+        //crée les données many to many en dernier
         $this->progress->setMessage("loading many to many datas");
         $this->loadManyToManyData();
 
+        //finito
         $this->progress->finish("Done!");
         $this->io->success('Fixtures loaded!');
         return 0;
     }
 
+    /**
+     * Charge des users bidons
+     *
+     * @param int $num
+     * @throws \Exception
+     */
     protected function loadUsers(int $num): void
     {
         $this->progress->setMessage("loading users");
         $allSchoolSites = $this->doctrine->getRepository(SchoolSite::class)->findAll();
 
-        //simple user
+        //2 utilisateurs écrits en dur pour s'en rappeler facilement :
+
+        //utilisateur lambda, ROLE_USER
         $yo = new User();
         $hash = $this->passwordEncoder->encodePassword($yo, "yoyoyo");
         $yo->setPassword($hash);
@@ -100,7 +127,7 @@ class FakerFixturesCommand extends Command
 
         $this->doctrine->getManager()->persist($yo);
 
-        //admin user
+        //admin
         $admin = new User();
         $hash = $this->passwordEncoder->encodePassword($admin, "admin");
         $admin->setPassword($hash);
@@ -140,6 +167,11 @@ class FakerFixturesCommand extends Command
         $this->doctrine->getManager()->flush();
     }
 
+    /**
+     * Charge les lieux bidons
+     *
+     * @param int $num
+     */
     protected function loadLocations(int $num): void
     {
         $this->progress->setMessage("loading locations");
@@ -164,6 +196,12 @@ class FakerFixturesCommand extends Command
         $this->doctrine->getManager()->flush();
     }
 
+    /**
+     * Charge des événements bidons
+     *
+     * @param int $num
+     * @throws \Exception
+     */
     protected function loadEvents(int $num): void
     {
         $this->progress->setMessage("loading events");
@@ -190,6 +228,13 @@ class FakerFixturesCommand extends Command
         $this->doctrine->getManager()->flush();
     }
 
+
+    /**
+     * Inscrits des users à des sorties
+     *
+     * @param int $num
+     * @throws \Exception
+     */
     protected function loadEventSubscriptions(int $num): void
     {
         $this->progress->setMessage("loading eventsubscriptions");
@@ -212,6 +257,11 @@ class FakerFixturesCommand extends Command
     }
 
 
+    /**
+     * Vide les tables (sauf ie cities)
+     *
+     * @throws \Exception
+     */
     protected function truncateTables()
     {
         $this->progress->setMessage("Truncating tables");
@@ -235,6 +285,9 @@ class FakerFixturesCommand extends Command
         }
     }
 
+    /**
+     * Aucun many to many, je pourrais virer
+     */
     protected function loadManyToManyData()
     {
 
