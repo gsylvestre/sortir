@@ -16,6 +16,14 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Modification du profil utilisateur
+ * @TODO: autre formulaire pour l'upload
+ * @TODO: autre formulaire pour le mot de passe
+ *
+ * Class ProfileType
+ * @package App\Form
+ */
 class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)

@@ -12,11 +12,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Formulaire de recherche et tri de sorties
+ *
+ * Ce formulaire n'est pas associée à une entité ! Voir la méthode configureOptions(), elle est vide.
+ * Du coup je suis libre pour mes champs, mais je dois récupérer les données à la mano dans le contrôleur
+ *
+ * Class EventSearchType
+ * @package App\Form
+ */
 class EventSearchType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            //ce formulaire est en get
             ->setMethod('get')
             ->add('school_site', EntityType::class, [
                 'label' => 'Site',
@@ -43,7 +53,7 @@ class EventSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            //pas besoin de protection csrf ici
             'csrf_protection' => false
         ]);
     }

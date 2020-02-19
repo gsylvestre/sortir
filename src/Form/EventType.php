@@ -11,6 +11,12 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Ajout d'événement
+ *
+ * Class EventType
+ * @package App\Form
+ */
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)

@@ -16,6 +16,12 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Formulaire de création de compte utilisateur, réservé aux admins
+ *
+ * Class RegistrationFormType
+ * @package App\Form
+ */
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -30,12 +36,12 @@ class RegistrationFormType extends AbstractType
                 'class' => SchoolSite::class,
                 'choice_label' => 'name'
             ])
-
+            //ce champ est mapped à false, car la propriété n'existe pas vraiment dans l'entité
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'label' => 'Mot de passe',
                 'mapped' => false,
+                //la validation est faite directement ici, pourquoi pas
+                //sinon, il fallait créer une propriété "bidon" dans l'entité pour utiliser les Assert()
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',
