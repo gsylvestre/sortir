@@ -1,3 +1,4 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    # active le thème de formulaire bootstrap
     form_themes: ['bootstrap_4_layout.html.twig']

@@ -23,8 +23,8 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Ces configs servent à spécifier dans quel fichier de log seront ajouté les messages
+    # voir surtout dans config/packages/dev/monolog.yaml
     App\Command\UpdateEventStatesCommand:
         tags:
             - { name: monolog.logger, channel: commands }

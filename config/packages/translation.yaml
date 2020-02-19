@@ -1,7 +1,7 @@
 framework:
     default_locale: en
     translator:
-        enabled: false
+        enabled: false #désactive la traduction (et vire les erreurs dans la debug bar)
         default_path: '%kernel.project_dir%/translations'
         fallbacks:
             - en
