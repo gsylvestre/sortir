@@ -50,20 +50,32 @@
 
 {% block js %}
     <script>
+        //quand on tente de soumettre le formulaire de création de lieu (modale)...
         $("#location_form").on("submit", function(e){
+            //j'empêche la soumission normale (pour que la page ne se recharge pas)
             e.preventDefault();
+            //j'envoie les données au serveur en ajax
             $.ajax({
                 //ne marche que parce que je ne suis pas dans un fichier js externe
+                //url à laquelle je fais ma requête
                 "url": "{{ path('location_create') }}",
+                //je prend toutes les données du formulaire et je les balance avec ma requête
                 "data": $("#location_form").serialize(),
+                //en POST
                 "method": "post"
             })
+                //sera appelée lorsque la requête est terminée
+                //je reçois la nouvelle "Location" en response, avec son id
             .done(function(response){
-                console.log(response);
+                //je crée une nouvelle balise <option>, ayant pour value l'id du lieu
                 var option = $("<option>").attr("value", response.location.id);
+                //j'injecte le nom du lieu en contenu de la balise
                 option.html(response.location.name);
+                //je lui met la propriété selected afin qu'elle soit préselectionnée dans le select
                 option.prop('selected', true);
+                //j'ajoute dans le select (au début de la liste)
                 $("#event_location").prepend(option);
+                //je ferme la modale
                 $('#locationModal').modal('hide');
             });
         });
