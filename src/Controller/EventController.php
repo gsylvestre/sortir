@@ -15,21 +15,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * Tout ce qui a trait aux sorties est géré ici
+ *
  * @Route("/sorties", name="event_")
  */
 class EventController extends AbstractController
 {
     /**
+     * Liste des sorties et recherche/filtres
+     *
      * @Route("", name="list")
      */
     public function list(Request $request)
     {
         //valeurs par défaut du formulaire de recherche
+        //sous forme de tableau associatif, car le form n'est pas associée à une entité
         $searchData = ['subscribed_to' => true, 'not_subscribed_to' => true];
         $searchForm = $this->createForm(EventSearchType::class, $searchData);
+
         $searchForm->handleRequest($request);
+
+        //on récupère les (éventuelles) données soumises a la mano
         $searchData = $searchForm->getData();
 
+        //appelle ma méthode perso de recherche et filtre
         $eventRepo = $this->getDoctrine()->getRepository(Event::class);
         $events = $eventRepo->search($this->getUser(), $searchData);
 
@@ -40,6 +49,8 @@ class EventController extends AbstractController
     }
 
     /**
+     * Affichage d'une sortie
+     *
      * @Route("/details/{id}", name="detail")
      */
     public function detail(Event $event)
@@ -50,12 +61,15 @@ class EventController extends AbstractController
     }
 
     /**
+     * Création d'une sortie
+     *
      * @Route("/ajout", name="create")
      */
     public function create(Request $request)
     {
         $event = new Event();
-        //avec des heures par défaut...
+
+        //avec des heures par défaut dans le form...
         $event->setStartDate((new \DateTimeImmutable())->setTime(17, 0));
         $event->setRegistrationLimitDate($event->getStartDate()->sub(new \DateInterval("PT1H")));
 
@@ -80,9 +94,10 @@ class EventController extends AbstractController
             return $this->redirectToRoute('event_list');
         }
 
-        //formulaire de location, pas traité ici !
+        //formulaire de lieu, pas traité ici ! Il est en effet soumis en ajax, vers une autre route
         $locationForm = $this->createForm(LocationType::class);
 
+        //on passe les 2 forms pour affichage
         return $this->render('event/create.html.twig', [
             'eventForm' => $eventForm->createView(),
             'locationForm' => $locationForm->createView()
@@ -94,6 +109,9 @@ class EventController extends AbstractController
      */
     public function publish(Event $event, EventStateHelper $stateHelper)
     {
+        //@TODO: vérifier que c'est bien l'auteur (ou un admin) qui est en train de publier
+        //@TODO: vérifier que ça peut être publié (pas annulée, pas closed, etc.)
+
         $stateHelper->changeEventState($event, "open");
         return $this->redirectToRoute('event_list');
     }
@@ -104,6 +122,8 @@ class EventController extends AbstractController
      */
     public function cancel(Event $event, EventStateHelper $stateHelper, Request $request)
     {
+        //@TODO: vérifier que la sortie n'est pas déjà annulée !
+
         $eventCancelation = new EventCancelation();
         $eventCancelation->setEvent($event);
         $eventCancelation->setCancelDate(new \DateTime());
