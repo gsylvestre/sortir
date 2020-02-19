@@ -7,6 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Connexion et déconnexion. Généré par Symfony presque à 100%.
+ * L'inscription du user se fait dans Controller/Admin/UserController.php
+ *
+ * Class SecurityController
+ * @package App\Controller
+ */
 class SecurityController extends AbstractController
 {
     /**
