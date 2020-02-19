@@ -21,9 +21,19 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * Requête perso à la bdd pour filtrer et rechercher les sorties
+     * Reçoit les données du form sous forme de tableau associatif
+     *
+     * @param UserInterface $user
+     * @param array|null $searchData
+     * @return array|mixed
+     */
     public function search(UserInterface $user, ?array $searchData)
     {
+        //un seul query builder, alias de event => e
         $qb = $this->createQueryBuilder('e');
+        //on sélectionne les event
         $qb->select('e');
 
         $stateRepo = $this->getEntityManager()->getRepository(EventState::class);
@@ -33,6 +43,7 @@ class EventRepository extends ServiceEntityRepository
         $createdState = $stateRepo->findOneBy(['name' => 'created']);
         $closedState = $stateRepo->findOneBy(['name' => 'closed']);
 
+        //ajoute des clauses where par défaut, toujours présentes
         $qb->andWhere('
             e.state = :openState OR e.state = :closedState 
             OR (e.state = :createdState AND e.author = :user) 
@@ -42,6 +53,7 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('createdState', $createdState);
 
+        //jointures toujours présentes, pour éviter que doctrine fasse 10000 requêtes
         $qb->leftJoin('e.subscriptions', 'sub')
             ->addSelect('sub')
             ->leftJoin('e.author', 'auth')
@@ -52,27 +64,30 @@ class EventRepository extends ServiceEntityRepository
         //la plus proche dans le temps en premier
         $qb->orderBy('e.startDate', 'ASC');
 
-        //recherche par mot-clef
+        //recherche par mot-clef, si applicable
         if (!empty($searchData['keyword'])){
             $qb->andWhere('e.name LIKE :kw')
                 ->setParameter('kw', '%'.$searchData['keyword'].'%');
         }
 
-        //filtre par site
+        //filtre par site, si applicable
         if (!empty($searchData['school_site'])){
             $qb->andWhere('auth.school = :school')
                 ->setParameter('school', $searchData['school_site']);
         }
 
+        //on récupère tout de suite les résultats, en fonction des filtres précédent
         $query = $qb->getQuery();
-        $results = $query->getResult();
+        $tempResults = $query->getResult();
 
-        //à partir d'ici, je filtre les résultats en PHP
-        $tempResults = [];
+        //à partir d'ici, je filtre les résultats en PHP, c'est plus simple pour moi
+        //presque sûr que ce serait plus clean avec le qb, mais ça me saoule
+        $results = [];
 
-        //sortie auxquelles je suis inscrit checkbox
+        //inclure les sorties auxquelles je suis inscrit (checkbox) ?
         if (!empty($searchData['subscribed_to'])){
-            $subscribedTo = array_filter($results, function($event) use ($user){
+            //stocke les sorties auxquelles je suis inscrit dans cette variable
+            $subscribedTo = array_filter($tempResults, function($event) use ($user){
                 /** @var $event Event $sub */
                 foreach($event->getSubscriptions() as $sub){
                     if ($sub->getUser()->getId() === $user->getId()){
@@ -81,12 +96,15 @@ class EventRepository extends ServiceEntityRepository
                 }
                 return false;
             });
-            $tempResults = array_merge($tempResults, $subscribedTo);
+
+            //fusionne ce tableau avec le tableau de résultat temporaire
+            $results = array_merge($tempResults, $subscribedTo);
         }
 
-        //sorties pas inscrits
+        //inclure les sorties auxquelles je ne suis pas inscrit ?
         if (!empty($searchData['not_subscribed_to'])){
-            $notSubscribedTo = array_filter($results, function($event) use ($user){
+            //stocke les sorties auxquelles je ne suis pas inscrit dans cette variable
+            $notSubscribedTo = array_filter($tempResults, function($event) use ($user){
                 /** @var $event Event $sub */
                 foreach($event->getSubscriptions() as $sub){
                     if ($sub->getUser()->getId() === $user->getId()){
@@ -95,10 +113,10 @@ class EventRepository extends ServiceEntityRepository
                 }
                 return true;
             });
-            $tempResults = array_merge($tempResults, $notSubscribedTo);
-        }
 
-        $results = $tempResults;
+            //fusionne ce tableau avec le tableau de résultat temporaire
+            $results = array_merge($tempResults, $notSubscribedTo);
+        }
 
         return $results;
     }
