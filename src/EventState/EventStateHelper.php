@@ -1,22 +1,38 @@
 <?php
 
-
 namespace App\EventState;
-
 
 use App\Entity\Event;
 use App\Entity\EventState;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * Ce service aide à gérer les états des sorties
+ *
+ * Class EventStateHelper
+ * @package App\EventState
+ */
 class EventStateHelper
 {
     private $doctrine;
 
+    /**
+     * on se fait injecter doctrine dans les veines
+     *
+     * EventStateHelper constructor.
+     * @param ManagerRegistry $doctrine
+     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
+    /**
+     * Retourne un objet State en fonction de son nom
+     *
+     * @param string $name
+     * @return EventState|object|null
+     */
     public function getStateByName(string $name)
     {
         $stateRepo = $this->doctrine->getRepository(EventState::class);
@@ -25,6 +41,12 @@ class EventStateHelper
         return $state;
     }
 
+    /**
+     * Change l'état d'un événement en bdd
+     *
+     * @param Event $event
+     * @param string $newStateName
+     */
     public function changeEventState(Event $event, string $newStateName)
     {
         $newState = $this->getStateByName($newStateName);
