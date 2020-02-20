@@ -57,7 +57,7 @@ class RegistrationFormType extends AbstractType
             ->add('isActive', null, ['label' => 'Actif ?', 'required' => false])
             ->add('isAdmin', CheckboxType::class, ['label' =>'Administrateur ?', 'required' => false])
 
-            ->add('submit', SubmitType::class, ['label' => 'Créer'])
+            ->add('submit', SubmitType::class, ['label' => 'Go'])
         ;
     }
 

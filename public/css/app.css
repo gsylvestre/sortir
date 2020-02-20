@@ -78,3 +78,11 @@ footer:hover .footer-logo {
     width: 100%;
 }
 
+#profile_pic {
+    max-width: 400px;
+}
+
+#profile_pic img {
+    max-width: 100%;
+    max-height: 100%;
+}

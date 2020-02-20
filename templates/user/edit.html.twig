@@ -3,8 +3,22 @@
 {% block title %}Modifier mon profil{% endblock %}
 
 {% block body %}
-    <h2>Modifier mon profil</h2>
+    <h3>Modifier mon profil</h3>
 
-    {{ form(registrationForm) }}
+    <div class="row">
+        <div class="col-sm-4">
+            <div id="profile_pic">
+                {% if app.user.picture %}
+                    <img src="{{ asset('uploads/profiles/'~app.user.picture) }}" alt="{{ app.user.firstname }} {{ app.user.lastname }}">
+                {% else %}
+                    <img src="{{ asset('img/profile-default.jpg') }}" alt="Photo par défaut">
+                {% endif %}
+            </div>
+            <a href="{{ path('user_upload') }}">Changer ma photo</a>
 
+        </div>
+        <div class="col-sm-8">
+            {{ form(registrationForm) }}
+        </div>
+    </div>
 {% endblock %}
