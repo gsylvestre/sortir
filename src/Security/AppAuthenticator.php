@@ -39,8 +39,7 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 
     public function supports(Request $request)
     {
-        return 'security_login' === $request->attributes->get('_route')
-            && $request->isMethod('POST');
+        return 'security_login' === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
     public function getCredentials(Request $request)
@@ -69,12 +68,13 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('Cet email n\'est pas connu.');
         }
 
-        //if (!$user->getIsActive()){
-        //    throw new CustomUserMessageAuthenticationException('Account deactivated.');
-        //}
+        //si isActive n'est pas égal à 1, on bloque tout
+        if (!$user->getIsActive()){
+            throw new CustomUserMessageAuthenticationException('Compte désactivé 🤣');
+        }
 
         return $user;
     }
@@ -94,11 +94,17 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        //redirige les admins vers le back-office
+        if (in_array("ROLE_ADMIN", $token->getRoleNames())){
+            return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+        }
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('home'));
+        //sinon, vers les sorties
+        return new RedirectResponse($this->urlGenerator->generate('event_list'));
     }
 
     protected function getLoginUrl()

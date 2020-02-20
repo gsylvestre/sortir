@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Liste des utilisateurs</h2>
+    <a class="btn btn-primary mb-2" href="{{ path('admin_user_create') }}">Ajouter un participant</a>
+
+    <table class="table table-condensed">
+
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Date inscription</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for user in users %}
+            <tr>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.createdDate|date("d-m-Y") }}</td>
+                <td><a href="{{ path('admin_user_ban', {id: user.id}) }}">
+                    {{ user.isActive ? 'Bannir' : 'Débannir' }}
+                </a></td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+{% endblock %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+

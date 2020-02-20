@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back-officounet!{% endblock %}
+
+{% block body %}
+    <h2>Back-officounet</h2>
+    <nav>
+        <a class="btn btn-primary" href="{{ path('admin_user_create') }}">Ajouter un participant</a>
+        <a class="btn btn-primary" href="{{ path('admin_user_list') }}">Tous les participants</a>
+    </nav>
+{% endblock %}
