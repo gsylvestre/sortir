@@ -26,26 +26,26 @@
             <tr>
                 <th>Intitulé</th>
                 <th>Statut</th>
-                <th>Inscrits</th>
-                <th>Places restantes</th>
-                <th>Date de début</th>
-                <th>Organisé par</th>
-                <th>École</th>
+                <th class="d-none d-lg-table-cell">Inscrits</th>
+                <th class="d-none d-md-table-cell">Places restantes</th>
+                <th class="d-none d-md-table-cell">Date de début</th>
+                <th class="d-none d-lg-table-cell">Organisé par</th>
+                <th class="d-none d-lg-table-cell">École</th>
                 <th>Action</th>
             </tr>
         {% for event in events %}
             <tr>
                 <td><a href="{{ path('event_detail', {'id': event.id}) }}">#{{ event.id }} {{ event.name }}</a></td>
                 <td>{{ event.state.name }}</td>
-                <td>{{ event.subscriptions|length }}</td>
+                <td class="d-none d-lg-table-cell">{{ event.subscriptions|length }}</td>
                 {% if event.maxRegistrations %}
-                    <td>{{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}</td>
+                    <td class="d-none d-md-table-cell">{{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}</td>
                 {% else %}
-                    <td>&#8734;</td>
+                    <td class="d-none d-md-table-cell">&#8734;</td>
                 {% endif %}
-                <td>{{ event.startDate|date("d-m-Y à H:i") }}</td>
-                <td>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</td>
-                <td>{{ event.author.school.name }}</td>
+                <td class="d-none d-md-table-cell">{{ event.startDate|date("d-m-Y à H:i") }}</td>
+                <td class="d-none d-lg-table-cell">{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</td>
+                <td class="d-none d-lg-table-cell">{{ event.author.school.name }}</td>
                 <td>
                     {% if event.state.name == 'open' %}
                         <a href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
