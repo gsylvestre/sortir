@@ -20,7 +20,8 @@
     ```bash
     composper install
     ```
-5. Configurer la base de données dans .env
+5. Configurer la base de données dans .env  
+
 6. Créer la bdd avec : 
     ```bash
     php bin/console doctrine:database:create
