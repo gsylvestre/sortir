@@ -1,8 +1,8 @@
-# Sortir.com de Guillaume
+# sortir.com de Guillaume
 
-## Projet Symfony février 2020
+**Projet ENI Symfony :: février 2020**
 
-### Instruction d'installation
+### Installation
 
 1. Dans cmder, naviguer vers votre dossier web : 
     ```bash
@@ -12,7 +12,7 @@
     ```bash
     git clone https://github.com/gsylvestre/sortir.git sortir-guillaume
     ```
-3. Naviguer _dans_ ce projet : 
+3. Naviguer _dans_ le répertoire de ce projet : 
     ```bash
     cd sortir-guillaume/
     ```
@@ -37,3 +37,20 @@
     ```bash
     php bin/console app:update-event-states
     ```
+10. Dans un navigateur, se rendre sur :  
+http://localhost/sortir-guillaume/public/  
+
+### Comptes utilisateur
+**Simple participant :**   
+mail : yo@yo.com  
+mdp  : yoyoyo
+
+**Administrateur :**   
+mail : admin@admin.com  
+mdp  : admin
+
+### Tests
+Pour lancer les tests fonctionnels (définis dans le répertoire `/tests/`), dans cmder :  
+```bash
+php bin/phpunit
+```
