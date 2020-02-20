@@ -19,7 +19,7 @@ class ForgotPasswordToken
     {
         $generator = new TokenGenerator();
         $token = $generator->generate(100);
-        $hash = password_hash($token, PASSWORD_DEFAULT);
+        $hash = bin2hex(password_hash($token, PASSWORD_DEFAULT));
 
         $this->token = $hash;
         $this->selector = $generator->generate(40);

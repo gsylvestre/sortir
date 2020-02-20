@@ -8,7 +8,10 @@ use App\Form\ForgotPasswordStep1Type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -23,7 +26,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/mot-de-passe-oublie", name="security_forgot_password_step_1")
      */
-    public function forgotPasswordStep1(Request $request)
+    public function forgotPasswordStep1(Request $request, MailerInterface $mailer)
     {
         $userRepo = $this->getDoctrine()->getRepository(User::class);
 
@@ -45,7 +48,18 @@ class SecurityController extends AbstractController
             $em->persist($token);
             $em->flush();
 
-            //@TODO: envoyer le mail ici avec le lien
+            $emailUrl = $this->generateUrl('security_forgot_password_step_3', [
+                'selector' => $token->getSelector(),
+                'token' => $token->getToken()
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $email = (new Email())
+                ->from('support@sortir.com')
+                ->to($email)
+                ->subject('Mot de passe oublié ?')
+                ->html('<a href="'.$emailUrl.'">Cliquez ici pour générer un nouveau mot de passe !</a>');
+
+            $mailer->send($email);
 
             return $this->redirectToRoute('security_forgot_password_step_2');
         }
@@ -61,6 +75,14 @@ class SecurityController extends AbstractController
     public function forgotPasswordStep2()
     {
         return $this->render('security/forgot_step_2.html.twig');
+    }
+
+    /**
+     * @Route("/mot-de-passe-oublie/nouveau/{selector}/{token}", name="security_forgot_password_step_3")
+     */
+    public function forgotPasswordStep3()
+    {
+        return $this->render('security/forgot_step_3.html.twig');
     }
 
 
