@@ -6,7 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Utilisateur du site, admin ou user
@@ -100,6 +103,26 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\EventSubscription", mappedBy="user")
      */
     private $eventSubscriptions;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $picture;
+
+
+    //Cette propriété ne sert qu'à recevoir l'objet créé par Symfony lors de l'upload du fichier
+    //Et à faire la validation
+    /**
+     *
+     * @Assert\Image(
+     *     minWidth = 200,
+     *     maxWidth = 2000,
+     *     minHeight = 200,
+     *     maxHeight = 2000,
+     *     maxSize = "20M"
+     * )
+     */
+    private $pictureUpload;
 
     public function __construct()
     {
@@ -326,4 +349,34 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): self
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getPictureUpload(): ?UploadedFile
+    {
+        return $this->pictureUpload;
+    }
+
+    /**
+     * @param UploadedFile $pictureUpload
+     */
+    public function setPictureUpload(?UploadedFile $pictureUpload): void
+    {
+        $this->pictureUpload = $pictureUpload;
+    }
+
+
 }
