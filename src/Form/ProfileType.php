@@ -31,7 +31,7 @@ class ProfileType extends AbstractType
                 'class' => SchoolSite::class,
                 'choice_label' => 'name'
             ])
-            ->add('submit', SubmitType::class, ['label' => 'Créer'])
+            ->add('submit', SubmitType::class, ['label' => 'OK'])
         ;
     }
 
