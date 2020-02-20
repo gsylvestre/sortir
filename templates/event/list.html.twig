@@ -36,7 +36,7 @@
         {% for event in events %}
             <tr>
                 <td><a href="{{ path('event_detail', {'id': event.id}) }}">#{{ event.id }} {{ event.name }}</a></td>
-                <td>{{ event.state.name }}</td>
+                <td>{{ event.state.prettyName }}</td>
                 <td class="d-none d-lg-table-cell">{{ event.subscriptions|length }}</td>
                 {% if event.maxRegistrations %}
                     <td class="d-none d-md-table-cell">{{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}</td>
