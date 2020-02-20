@@ -41,6 +41,8 @@ class UserController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 
+        $previousProfilePicture = $user->getPicture();
+
         $form = $this->createForm(ProfileUploadType::class, $user);
         $form->handleRequest($request);
 
@@ -57,7 +59,15 @@ class UserController extends AbstractController
                 $em->persist($user);
                 $em->flush();
 
-                $this->addFlash('success', 'Photo de profil bien ajoutée !');
+                if (!empty($previousProfilePicture)){
+                    //supprime la photo précédente, physiquement
+                    unlink($this->getParameter('profile_pic_dir') . "/" . $previousProfilePicture);
+                    $this->addFlash('success', 'Photo de profil modifiée !');
+                }
+                else {
+                    $this->addFlash('success', 'Photo de profil ajoutée !');
+                }
+
                 return $this->redirectToRoute('user_profile', ["id" => $user->getId()]);
             }
 
