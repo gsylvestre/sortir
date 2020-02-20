@@ -78,7 +78,9 @@ class SmokeTest extends AbstractController
             ["/sorties"],
             ["/sorties/details/67"],
             ["/sorties/ajout"],
-            ["/profil/modification"]
+            ["/profil/modification"],
+            ["/profil/modification/photo"],
+            ["/profil/12"],
         ];
     }
 
