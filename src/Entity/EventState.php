@@ -30,6 +30,11 @@ class EventState
      */
     private $events;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $prettyName;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -79,6 +84,18 @@ class EventState
                 $event->setState(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrettyName(): ?string
+    {
+        return $this->prettyName;
+    }
+
+    public function setPrettyName(string $prettyName): self
+    {
+        $this->prettyName = $prettyName;
 
         return $this;
     }
