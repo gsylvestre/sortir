@@ -49,6 +49,9 @@ mdp  : yoyoyo
 mail : admin@admin.com  
 mdp  : admin
 
+**Tous les autres users**  
+mdp : ryanryan
+
 ### Tests
 Pour lancer les tests fonctionnels (définis dans le répertoire `/tests/`), dans cmder :  
 ```bash
