@@ -93,6 +93,9 @@
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
+    "gsylvestre/php-token-generator": {
+        "version": "v0.1"
+    },
     "gsylvestre/symfony-faker-fixtures": {
         "version": "v1.0.11"
     },

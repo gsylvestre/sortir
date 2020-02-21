@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Allez voir vos mails !</h2>
+    <p>Un message vous a été envoyé ! Allez cliquer sur le lien là-bas ! </p>
+
+    <h4>Pour débug seulement !!</h4>
+    <p>L'URL qui a été envoyée par email au user est la suivante. Il doit cliquer dessus : </p>
+    <small><a href="{{ url_sent }}">{{ url_sent }}</a></small>
+{% endblock %}
+
+{% block title %}
+Oubli du mot de passe | étape 2
+{% endblock %}
+

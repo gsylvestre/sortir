@@ -29,6 +29,8 @@ security:
     access_control:
         # premièrement, on autorise l'accès au login pour tout le monde !
         - { path: ^/connexion$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # idem pour l'oubli du mot de passe, si ça commence par ici du coup...
+        - { path: ^/mot-de-passe-oublie, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # ensuite, on autorise l'accès au back-office seulement pour les admins
         - { path: ^/admin, roles: ROLE_ADMIN }
         # finalement, on autorise l'accès au site seulement pour les users connectés

@@ -124,6 +124,7 @@ class User implements UserInterface
      */
     private $pictureUpload;
 
+
     public function __construct()
     {
         $this->createdEvents = new ArrayCollection();
@@ -377,6 +378,5 @@ class User implements UserInterface
     {
         $this->pictureUpload = $pictureUpload;
     }
-
 
 }
