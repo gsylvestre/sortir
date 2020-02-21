@@ -15,15 +15,16 @@ class ForgotPasswordToken
      * En enlevant tous les setters, cet objet est donc immuable
      *
      */
-    public function __construct()
+    public function __construct(User $user)
     {
         $generator = new TokenGenerator();
-        $token = $generator->generate(100);
-        $hash = bin2hex(password_hash($token, PASSWORD_DEFAULT));
-
-        $this->token = $hash;
-        $this->selector = $generator->generate(40);
+        $token = $generator->generate(25);
+        $this->clearToken = $token;
+        $this->token = password_hash($this->clearToken, PASSWORD_DEFAULT);
+        $this->selector = $generator->generate(25);
         $this->dateCreated = new \DateTime();
+
+        $this->user = $user;
     }
 
     /**
@@ -38,6 +39,9 @@ class ForgotPasswordToken
      */
     private $selector;
 
+    //pas sauvegardé en bdd
+    private $clearToken;
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -47,6 +51,12 @@ class ForgotPasswordToken
      * @ORM\Column(type="datetime")
      */
     private $dateCreated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     public function getId(): ?int
     {
@@ -58,6 +68,11 @@ class ForgotPasswordToken
         return $this->selector;
     }
 
+    public function getClearToken(): ?string
+    {
+        return $this->clearToken;
+    }
+
     public function getToken(): ?string
     {
         return $this->token;
@@ -66,5 +81,17 @@ class ForgotPasswordToken
     public function getDateCreated(): ?\DateTimeInterface
     {
         return $this->dateCreated;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
