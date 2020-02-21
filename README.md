@@ -20,25 +20,15 @@
     ```bash
     composper install
     ```
-5. Configurer la base de données dans .env  
+5. Dans PHPMyAdmin, importer la base de données `sortir-guillaume.sql` (à la racine du dossier)
 
-6. Créer la bdd avec : 
-    ```bash
-    php bin/console doctrine:database:create
-    ```
-7. Créer les tables : 
-    ```bash
-    php bin/console doctrine:schema:update --force
-    ```
-8. Importer les données de test : 
-    ```bash
-    php bin/console app:fixtures:load
-    ```
-9. Mettre à jour l'état de sortie : 
+6. Configurer la base de données dans le fichier `.env`  
+
+7. Mettre à jour l'état de sortie dans cmder : 
     ```bash
     php bin/console app:update-event-states
     ```
-10. Dans un navigateur, se rendre sur :  
+8. Dans un navigateur, se rendre sur :  
 http://localhost/sortir-guillaume/public/  
 
 ### Comptes utilisateur
