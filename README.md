@@ -1,6 +1,14 @@
 # sortir.com de Guillaume
 
-**Projet ENI Symfony :: février 2020**
+**Projet ENI Symfony 5 :: février 2020**  
+
+Peut être intéressant à explorer : 
+- Les fixtures maisons, (dossier `Command`)
+- Le système d'oubli de mot de passe sécuritaire (`SecurityController`)
+- Le service pour MapBox (dossier `Geolocation`)
+- Requête AJAX dans `templates/event/create.html.twig`
+- L'authenticator dans `Security/` (nouvelle manière de gérer l'authentification)
+- Les tests fonctionnels dans `/tests/`
 
 ### Installation
 
