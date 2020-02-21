@@ -26,7 +26,7 @@ Peut être intéressant à explorer :
     ```
 4. Installer les dépendances de Composer
     ```bash
-    composper install
+    composer install
     ```
 5. Dans PHPMyAdmin, importer la base de données `sortir-guillaume.sql` (à la racine du dossier)
 
