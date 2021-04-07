@@ -43,6 +43,7 @@ class SecurityController extends AbstractController
             $email = $form->getData()['email'];
 
             //cherche un utilisateur ayant cet email
+            /** @var User $foundUser */
             $foundUser = $userRepo->findOneBy(["email" => $email]);
             //si on ne le trouve pas... errreur
             if (empty($foundUser)){
@@ -106,7 +107,7 @@ class SecurityController extends AbstractController
 
         //cherche la token reçue dans l'URL dans la bdd, en fonction du selector
         $tokenRepo = $this->getDoctrine()->getRepository(ForgotPasswordToken::class);
-        $foundToken = $tokenRepo->findOneBy(['selector' => $selector], ['dateCreated' => 'DESC']);
+        $foundToken = $tokenRepo->findOneBy(['selector' => $selector]);
 
         //si on ne l'a pas trouvée, erreur
         if (!$foundToken){

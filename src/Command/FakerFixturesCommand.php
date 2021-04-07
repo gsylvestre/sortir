@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\EventCancelation;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,19 +85,75 @@ class FakerFixturesCommand extends Command
         $this->truncateTables();
 
         //l'ordre est important ici
+        $this->loadSchoolSites();
+        $this->loadCities();
         $this->loadUsers($num = 50);
         $this->loadLocations($num = 30);
+
+        $this->loadEventStates();
         $this->loadEvents($num = 100);
         $this->loadEventSubscriptions($num = 500);
+        $this->loadEventCancelations();
 
-        //crée les données many to many en dernier
-        $this->progress->setMessage("loading many to many datas");
-        $this->loadManyToManyData();
-
-        //finito
+        //that's it
         $this->progress->finish("Done!");
         $this->io->success('Fixtures loaded!');
         return 0;
+    }
+
+
+
+    /**
+     * Charge les états possibles d'événements
+     */
+    protected function loadEventStates():void
+    {
+        $stateNames = [
+            "created" => "Créée",
+            "open" => "Ouverte",
+            "closed" => "Fermée",
+            "ongoing" => "En cours",
+            "ended" => "Terminée",
+            "archived" => "Archivée",
+            "canceled" => "Annulée"
+        ];
+
+        foreach($stateNames as $name => $prettyName){
+            $state = new EventState();
+            $state->setName($name);
+            $state->setPrettyName($prettyName);
+            $this->doctrine->getManager()->persist($state);
+        }
+
+        $this->doctrine->getManager()->flush();
+    }
+
+        /**
+     * Charge les villes
+     */
+    protected function loadCities():void
+    {
+        $connection = $this->doctrine->getConnection();
+        $stmt = $connection->prepare(file_get_contents(__DIR__ . "/city.sql"));
+        $stmt->execute();
+    }
+
+    /**
+     * Charge les écoles
+     */
+    protected function loadSchoolSites(): void
+    {
+        $this->progress->setMessage("loading schools");
+
+        $names = ["La-Roche-Sur-Yon", "Nantes", "Rennes", "Niort"];
+
+        foreach($names as $name){
+            $school = new SchoolSite();
+            $school->setName($name);
+            $this->doctrine->getManager()->persist($school);
+        }
+
+        $this->doctrine->getManager()->flush();
     }
 
     /**
@@ -212,9 +269,13 @@ class FakerFixturesCommand extends Command
             $event = new Event();
 
             $event->setName( $this->faker->catchPhrase );
-            $event->setStartDate( $this->faker->dateTimeBetween($startDate = "- 3 months", $endDate = "+ 6 months") );
+
+            $event->setCreationDate( $this->faker->dateTimeBetween($startDate = "- 3 months") );
+            $this->io->writeln($event->getCreationDate()->format("Y-m-d"));
+            $event->setRegistrationLimitDate( $this->faker->dateTimeBetween($event->getCreationDate(), $event->getCreationDate()->add(new \DateInterval("P60D")) ));
+            $event->setStartDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate(), $event->getRegistrationLimitDate()->add(new \DateInterval("P2D")) ));
+
             $event->setDuration( $this->faker->optional($chancesOfValue = 0.9, $default = null)->numberBetween($min = 1, $max = 6) );
-            $event->setRegistrationLimitDate( $this->faker->dateTimeBetween($event->getStartDate()->sub(new \DateInterval('P30D')), $event->getStartDate()) );
             $event->setMaxRegistrations( $this->faker->optional($chancesOfValue = 0.5, $default = null)->numberBetween($min = 1000, $max = 9000) );
             $event->setInfos( $this->faker->paragraphs($nb = $this->faker->randomDigitNot(0), $asText = true) );
             $event->setLocation( $this->faker->randomElement($allLocations) );
@@ -256,6 +317,27 @@ class FakerFixturesCommand extends Command
         $this->doctrine->getManager()->flush();
     }
 
+    /**
+     * Charge les raisons d'annulation
+     */
+    protected function loadEventCancelations(): void
+    {
+        $this->progress->setMessage("loading EventCancelations");
+        $canceledState = $this->doctrine->getRepository(EventState::class)->findBy(['name' => 'canceled']);
+        $canceledEvents = $this->doctrine->getRepository(Event::class)->findBy(['state' => $canceledState]);
+
+        /** @var Event $event */
+        foreach($canceledEvents as $event){
+            $cancelationReason = new EventCancelation();
+            $cancelationReason->setEvent($event);
+            $cancelationReason->setReason($this->faker->paragraph);
+            $cancelationReason->setCancelDate($this->faker->dateTimeBetween($event->getCreationDate(), $event->getCreationDate()->add(new \DateInterval("P20D"))));
+            $this->doctrine->getManager()->persist($cancelationReason);
+            $this->progress->advance();
+            $this->doctrine->getManager()->flush();
+        }
+    }
+
 
     /**
      * Vide les tables (sauf ie cities)
@@ -271,10 +353,14 @@ class FakerFixturesCommand extends Command
             $connection->beginTransaction();
             $connection->query("SET FOREIGN_KEY_CHECKS = 0");
 
+            $connection->query("TRUNCATE school_site");
+            $connection->query("TRUNCATE city");
             $connection->query("TRUNCATE user");
             $connection->query("TRUNCATE location");
+            $connection->query("TRUNCATE event_state");
             $connection->query("TRUNCATE event");
             $connection->query("TRUNCATE event_subscription");
+            $connection->query("TRUNCATE event_cancelation");
 
             $connection->query("SET FOREIGN_KEY_CHECKS = 1");
             $connection->commit();
@@ -283,13 +369,5 @@ class FakerFixturesCommand extends Command
             $connection->rollBack();
             throw $e;
         }
-    }
-
-    /**
-     * Aucun many to many, je pourrais virer
-     */
-    protected function loadManyToManyData()
-    {
-
     }
 }

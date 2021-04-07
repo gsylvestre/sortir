@@ -79,6 +79,11 @@ class Event
      */
     private $cancelation;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $creationDate;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -292,6 +297,18 @@ class Event
         if ($cancelation->getEvent() !== $this) {
             $cancelation->setEvent($this);
         }
+
+        return $this;
+    }
+
+    public function getCreationDate(): ?\DateTimeInterface
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(\DateTimeInterface $creationDate): self
+    {
+        $this->creationDate = $creationDate;
 
         return $this;
     }

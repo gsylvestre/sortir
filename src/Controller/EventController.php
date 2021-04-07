@@ -68,6 +68,7 @@ class EventController extends AbstractController
     public function create(Request $request)
     {
         $event = new Event();
+        $event->setCreationDate(new \DateTime());
 
         //avec des heures par défaut dans le form...
         $event->setStartDate((new \DateTimeImmutable())->setTime(17, 0));
@@ -80,6 +81,7 @@ class EventController extends AbstractController
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()){
             //on donne l'état "créée" à cette sortie
+            /** @var EventState $createdState */
             $createdState = $eventStateRepo->findOneBy(['name' => 'created']);
             $event->setState($createdState);
 
