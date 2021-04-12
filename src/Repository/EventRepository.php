@@ -77,6 +77,17 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('school', $searchData['school_site']);
         }
 
+        //filtre par date de début minimum
+        if (!empty($searchData['start_at_min_date'])){
+            $qb->andWhere('e.startDate >= :start_at_min_date')
+                ->setParameter('start_at_min_date', $searchData['start_at_min_date']);
+        }
+        //et date de début maximum
+        if (!empty($searchData['start_at_max_date'])){
+            $qb->andWhere('e.startDate <= :start_at_max_date')
+                ->setParameter('start_at_max_date', $searchData['start_at_max_date']);
+        }
+
         //ce machin crée un ensemble de condition OR entre parenthèses
         //on y ajoute dynamiquement des WHERE plus loin
         $checkBoxesOr = $qb->expr()->orX();

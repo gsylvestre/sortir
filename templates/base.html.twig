@@ -83,6 +83,11 @@
         <script>
             //active le flatpickr sur toutes les pages
             flatpickr(".datepicker", {
+                locale: "fr"
+            });
+
+            //active le flatpickr avec les heures sur toutes les pages
+            flatpickr(".datetimepicker", {
                 enableTime: true,
                 time_24hr: true,
                 locale: "fr"

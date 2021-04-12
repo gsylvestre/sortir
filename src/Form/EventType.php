@@ -24,9 +24,19 @@ class EventType extends AbstractType
         $builder
             ->add('name', null, ['label' => 'Titre de la sortie'])
             ->add('infos', null, ['label' => "Plus d'infos"])
-            ->add('startDate', null, ['label' => 'Débute le...', 'date_widget' => 'single_text'])
+            ->add('startDate', null, [
+                'label' => 'Débute le...',
+                'html5' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'datetimepicker']
+            ])
             ->add('duration', IntegerType::class, ['label' => 'Durée, en heures'])
-            ->add('registrationLimitDate', null, ['label' => "Date limite d'inscription", 'date_widget' => 'single_text'])
+            ->add('registrationLimitDate', null, [
+                'label' => "Date limite d'inscription",
+                'html5' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'datetimepicker']
+            ])
             ->add('maxRegistrations', IntegerType::class, ['label' => 'Nombre max de participants'])
             ->add('location', EntityType::class, [
                 'label' => 'Lieu',
