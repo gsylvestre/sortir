@@ -40,7 +40,10 @@ class EventSearchType extends AbstractType
                 'required' => false,
             ])
             ->add('start_at_min_date', DateType::class, [
-                'label' => 'Entre le'
+                'label' => 'Entre le',
+                'html5' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'datepicker']
             ])
             ->add('start_at_max_date', DateType::class, [
                 'label' => 'Et le'

@@ -6,19 +6,29 @@
 
         <title>{% block title %}Sortir.com à l'ENI!{% endblock %}</title>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        {# jquery  #}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+        {# mapbox pour les cartes  #}
         <script src="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css" rel="stylesheet" />
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        {# bootstrap css et js #}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
 
+        {# datepicker  #}
+        <script src="{{ asset('bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker.standalone.min.css') }}">
+        <script src="{{ asset('bootstrap-datepicker/locales/bootstrap-datepicker.fr.min.js') }}" charset="UTF-8"></script>
+
+        {# theme bootstrap  #}
         <link rel="stylesheet" href="{{ asset('css/theme.min.css') }}">
 
+        {# mon css  #}
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
+        {# favicon  #}
         <link rel="icon" href="{{ asset('img/favicon.png') }}">
     </head>
     <body>
@@ -69,6 +79,11 @@
         </footer>
 
 
+        <script>
+            $('.datepicker').datepicker({
+                language: 'fr'
+            });
+        </script>
         {% block js %}{% endblock %}
     </body>
 </html>
