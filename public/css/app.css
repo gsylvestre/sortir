@@ -82,6 +82,21 @@ footer:hover .footer-logo {
     background-position: top center;
     overflow: hidden;
     padding: 100px 10px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero h2,
+.hero h4 {
+    background-color: black;
+    color: #fff;
+    display: inline-block;
+    padding: 0.5rem;
+
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
 }
 
 #map {

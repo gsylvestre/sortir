@@ -21,6 +21,10 @@ security:
             logout:
                 path: security_logout
                 target: home
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 6048000 # 10 week in seconds
+                path: /
 
     role_hierarchy:
         # nos admins ont tous les pouvoirs des users

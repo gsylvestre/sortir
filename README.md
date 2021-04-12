@@ -1,20 +1,19 @@
 # sortir.com de Guillaume
 
-**Projet ENI Symfony 5 :: février 2020**  
+**Projet ENI Symfony 139A**  
 
 Peut être intéressant à explorer : 
 - Les fixtures maisons, (dossier `Command`)
-- Le système d'oubli de mot de passe sécuritaire (`SecurityController`)
+- Le système d'oubli de mot de passe fait maison (`SecurityController`)
 - Le service pour MapBox (dossier `Geolocation`)
 - Requête AJAX dans `templates/event/create.html.twig`
-- L'authenticator dans `Security/` (nouvelle manière de gérer l'authentification)
 - Les tests fonctionnels dans `/tests/`
 
 ### Installation
 
 1. Dans cmder, naviguer vers votre dossier web : 
     ```bash
-    cd /wamp64/www/
+    cd /Wamp64/www/
     ```
 2. Cloner ce projet : 
     ```bash
@@ -28,16 +27,27 @@ Peut être intéressant à explorer :
     ```bash
     composer install
     ```
-5. Dans PHPMyAdmin, importer la base de données `sortir-guillaume.sql` (à la racine du dossier)
+5. Configurer la base de données dans le fichier `.env`  
 
-6. Configurer la base de données dans le fichier `.env`  
+6. Créer la base de données : 
+    ```bash
+    php bin/console doctrine:database:create
+    php bin/console doctrine:schema:update --force
+    ```
+7. Charger les données de test : 
+    ```bash
+    php bin/console app:fixtures:load
+    ```
 
-7. Mettre à jour l'état de sortie dans cmder : 
+8. Mettre à jour l'état des sorties : 
     ```bash
     php bin/console app:update-event-states
     ```
-8. Dans un navigateur, se rendre sur :  
-http://localhost/sortir-guillaume/public/  
+   
+9. Lancer le serveur : 
+   ```bash
+   symfony server:start
+   ```
 
 ### Comptes utilisateur
 **Simple participant :**   
