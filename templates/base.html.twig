@@ -35,7 +35,7 @@
     <body>
 
         <header class="bg-primary text-white">
-            <div class="container-fluid">
+            <div class="container">
                 <nav class="main-nav">
                     <a class="home-main-link" href="{{ path('home') }}"><img src="{{ asset('img/favicon.png') }}" alt="sortir.com logo"><h1>Sortir.com</h1></a>
                     <a href="{{ path('event_list') }}">Les sorties</a>
@@ -60,7 +60,7 @@
         </header>
 
         <main>
-            <div class="container-fluid">
+            <div class="container">
                 {# read and display all flash messages #}
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
@@ -74,7 +74,7 @@
             </div>
         </main>
         <footer id="super-footer" class="bg-primary text-white mt-5">
-            <div class="container-fluid">
+            <div class="container">
                 &copy;{{ "now"|date("Y") }} ENI <img class="footer-logo" src="{{ asset('img/favicon.png') }}" alt="sortir.com logo">
             </div>
         </footer>
