@@ -2,6 +2,7 @@
 
 {% block body %}
     <h2>Profil de {{ user.firstname }} {{ user.lastname }}</h2>
+    <div>Campus : {{ user.school.name }}</div>
     <div id="profile_pic">
         {% if user.picture %}
             <img src="{{ asset('uploads/profiles/'~user.picture) }}" alt="{{ user.firstname }} {{ user.lastname }}">
