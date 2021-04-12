@@ -17,10 +17,11 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
 
-        {# datepicker  #}
-        <script src="{{ asset('bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-        <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker.standalone.min.css') }}">
-        <script src="{{ asset('bootstrap-datepicker/locales/bootstrap-datepicker.fr.min.js') }}" charset="UTF-8"></script>
+        {# datepicker flatpicker  #}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/confetti.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 
         {# theme bootstrap  #}
         <link rel="stylesheet" href="{{ asset('css/theme.min.css') }}">
@@ -36,7 +37,7 @@
         <header class="bg-primary text-white">
             <div class="container-fluid">
                 <nav class="main-nav">
-                    <a class="home-main-link" href="{{ path('home') }}"><img src="{{ asset('img/favicon.png') }}"><h1>Sortir.com</h1></a>
+                    <a class="home-main-link" href="{{ path('home') }}"><img src="{{ asset('img/favicon.png') }}" alt="sortir.com logo"><h1>Sortir.com</h1></a>
                     <a href="{{ path('event_list') }}">Les sorties</a>
                     <a href="{{ path('event_create') }}">Créer une sortie</a>
                 </nav>
@@ -74,14 +75,17 @@
         </main>
         <footer id="super-footer" class="bg-primary text-white mt-5">
             <div class="container-fluid">
-                &copy;{{ "now"|date("Y") }} ENI <img class="footer-logo" src="{{ asset('img/favicon.png') }}">
+                &copy;{{ "now"|date("Y") }} ENI <img class="footer-logo" src="{{ asset('img/favicon.png') }}" alt="sortir.com logo">
             </div>
         </footer>
 
 
         <script>
-            $('.datepicker').datepicker({
-                language: 'fr'
+            //active le flatpickr sur toutes les pages
+            flatpickr(".datepicker", {
+                enableTime: true,
+                time_24hr: true,
+                locale: "fr"
             });
         </script>
         {% block js %}{% endblock %}
