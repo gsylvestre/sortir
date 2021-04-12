@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use App\Entity\EventState;
+use App\Entity\EventSubscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -76,47 +77,39 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('school', $searchData['school_site']);
         }
 
-        //on récupère tout de suite les résultats, en fonction des filtres précédent
-        $query = $qb->getQuery();
-        $tempResults = $query->getResult();
+        //ce machin crée un ensemble de condition OR entre parenthèses
+        //on y ajoute dynamiquement des WHERE plus loin
+        $checkBoxesOr = $qb->expr()->orX();
 
-        //à partir d'ici, je filtre les résultats en PHP, c'est plus simple pour moi
-        //presque sûr que ce serait plus clean avec le qb, mais ça me saoule
-        $results = [];
+        //récupère l'ids des sorties auxquelles je suis inscrit dans une autre requête
+        //ça nous donne un array contenant les ids, qui sera utile pour les IN ou NOT IN plus loin
+        $subQueryBuilder = $this->createQueryBuilder('e');
+        $subQueryBuilder
+            ->from(EventSubscription::class, 'sub')->select("DISTINCT(ev.id)")
+            ->join('sub.event', 'ev')->setParameter("user", $user)
+            ->andWhere('sub.user = :user');
+        $result = $subQueryBuilder->getQuery()->getScalarResult();
+        $subcribedToEventIds = array_column($result, "1");
 
-        //inclure les sorties auxquelles je suis inscrit (checkbox) ?
+        //inclure les sorties auxquelles je suis inscrit
         if (!empty($searchData['subscribed_to'])){
-            //stocke les sorties auxquelles je suis inscrit dans cette variable
-            $subscribedTo = array_filter($tempResults, function($event) use ($user){
-                /** @var $event Event $sub */
-                foreach($event->getSubscriptions() as $sub){
-                    if ($sub->getUser()->getId() === $user->getId()){
-                        return true;
-                    }
-                }
-                return false;
-            });
-
-            //fusionne ce tableau avec le tableau de résultat temporaire
-            $results = array_merge($tempResults, $subscribedTo);
+            $checkBoxesOr->add($qb->expr()->in('sub.event', $subcribedToEventIds));
         }
-
-        //inclure les sorties auxquelles je ne suis pas inscrit ?
+        //inclure les sorties auxquelles je ne suis pas inscrit
         if (!empty($searchData['not_subscribed_to'])){
-            //stocke les sorties auxquelles je ne suis pas inscrit dans cette variable
-            $notSubscribedTo = array_filter($tempResults, function($event) use ($user){
-                /** @var $event Event $sub */
-                foreach($event->getSubscriptions() as $sub){
-                    if ($sub->getUser()->getId() === $user->getId()){
-                        return false;
-                    }
-                }
-                return true;
-            });
-
-            //fusionne ce tableau avec le tableau de résultat temporaire
-            $results = array_merge($tempResults, $notSubscribedTo);
+            $checkBoxesOr->add($qb->expr()->notIn('sub.event', $subcribedToEventIds));
         }
+        //inclure les sorties dont je suis l'organisateur
+        if (!empty($searchData['is_organizer'])){
+            $checkBoxesOr->add($qb->expr()->eq('auth', $user->getId()));
+        }
+
+        //maintenant que nos clauses OR regroupées sont créées, on les ajoute à la requête dans un grand AND()
+        $qb->andWhere($checkBoxesOr);
+
+        //on récupère les résultats, en fonction des filtres précédent
+        $query = $qb->getQuery();
+        $results = $query->getResult();
 
         return $results;
     }

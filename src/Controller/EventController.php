@@ -30,7 +30,13 @@ class EventController extends AbstractController
     {
         //valeurs par défaut du formulaire de recherche
         //sous forme de tableau associatif, car le form n'est pas associée à une entité
-        $searchData = ['subscribed_to' => true, 'not_subscribed_to' => true];
+        $searchData = [
+            'subscribed_to' => true,
+            'not_subscribed_to' => true,
+            'is_organizer' => true,
+            'start_at_min_date' => new \DateTime("- 1 month"),
+            'start_at_max_date' => new \DateTime("+ 1 year"),
+        ];
         $searchForm = $this->createForm(EventSearchType::class, $searchData);
 
         $searchForm->handleRequest($request);

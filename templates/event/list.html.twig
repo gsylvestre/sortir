@@ -10,8 +10,12 @@
             <div class="col col-sm">
                 {{ form_row(searchForm.school_site) }}
                 {{ form_row(searchForm.keyword) }}
+                {{ form_row(searchForm.start_at_min_date) }}
+                {{ form_row(searchForm.start_at_max_date) }}
             </div>
             <div class="col col-sm d-flex flex-column justify-content-end">
+                <h5>Inclure...</h5>
+                {{ form_row(searchForm.is_organizer) }}
                 {{ form_row(searchForm.subscribed_to) }}
                 {{ form_row(searchForm.not_subscribed_to) }}
             </div>

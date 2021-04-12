@@ -6,6 +6,7 @@ use App\Entity\SchoolSite;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,6 +37,16 @@ class EventSearchType extends AbstractType
             ])
             ->add('keyword', SearchType::class, [
                 'label' => 'Mots-clefs',
+                'required' => false,
+            ])
+            ->add('start_at_min_date', DateType::class, [
+                'label' => 'Entre le'
+            ])
+            ->add('start_at_max_date', DateType::class, [
+                'label' => 'Et le'
+            ])
+            ->add('is_organizer', CheckboxType::class, [
+                'label' => "Sorties dont je suis l'organisateur",
                 'required' => false,
             ])
             ->add('subscribed_to', CheckboxType::class, [
