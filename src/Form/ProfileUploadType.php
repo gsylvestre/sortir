@@ -14,7 +14,10 @@ class ProfileUploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('pictureUpload', FileType::class, ['label' => 'Photo'])
+            ->add('pictureUpload', FileType::class, [
+                'label' => 'Photo',
+                'attr' => ['placeholder' => 'Veuillez choisir un fichier...']
+            ])
             ->add('submit', SubmitType::class, ['label' => 'Envoyer !'])
         ;
     }
