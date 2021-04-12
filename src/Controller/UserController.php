@@ -71,7 +71,10 @@ class UserController extends AbstractController
                 //s'il y avait une autre photo précédemment...
                 if (!empty($previousProfilePicture)){
                     //supprime la photo précédente, physiquement
-                    unlink($this->getParameter('profile_pic_dir') . "/" . $previousProfilePicture);
+                    $filelocation = $this->getParameter('profile_pic_dir') . "/" . $previousProfilePicture;
+                    if (file_exists($filelocation)){
+                        unlink($filelocation);
+                    }
                     $this->addFlash('success', 'Photo de profil modifiée !');
                 }
                 //sinon, c'est que c'est une nouvelle photo
