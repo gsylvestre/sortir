@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Entity\Location;
 use App\Geolocation\MapBoxHelper;
+use App\Repository\CityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,5 +71,17 @@ class LocationController extends AbstractController
         //renvoie la réponse sous forme de données JSON
         //le bon Content-Type est automatiquement configuré par cet objet JsonResponse
         return new JsonResponse($data);
+    }
+
+    /**
+     * Méthode appelée en AJAX seulement. Retourne la liste des villes correspondant à un code postal.
+     * @Route("/api/location/cities/search", name="location_find_cities_by_zip")
+     */
+    public function findCitiesByZip(Request $request, CityRepository $cityRepository)
+    {
+        $zip = $request->query->get('zip');
+        $cities = $cityRepository->findBy(['zip' => $zip], ['name' => 'ASC']);
+
+        return $this->render('location/ajax_cities_list.html.twig', ['cities' => $cities]);
     }
 }

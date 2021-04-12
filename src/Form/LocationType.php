@@ -21,7 +21,7 @@ class LocationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
+            ->add('zip', null, ['label' => 'Code postal'])
             ->add('city', EntityType::class, [
                 'label' => 'Ville',
                 'class' => City::class,
@@ -34,7 +34,6 @@ class LocationType extends AbstractType
                 },
             ])
             ->add('street', null, ['label' => 'Adresse'])
-            ->add('zip', null, ['label' => 'Code postal'])
             ->add('name', null, ['label' => 'Donner un nom à ce lieu plz'])
         ;
     }

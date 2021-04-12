@@ -12,7 +12,10 @@
     {{ form_row(eventForm.duration) }}
     {{ form_row(eventForm.registrationLimitDate) }}
     {{ form_row(eventForm.maxRegistrations) }}
-    <div>{{ form_label(eventForm.location) }} <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#locationModal">+</button></div>
+    <div>
+        {{ form_label(eventForm.location) }}
+        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#locationModal">+</button>
+    </div>
     {{ form_widget(eventForm.location) }}
     {{ form_errors(eventForm.location) }}
 
@@ -21,7 +24,7 @@
     {{ form_end(eventForm) }}
 
 
-    <!-- Modal -->
+    {# fenêtre modale, cachée par défaut, sera affichée au clic sur le + #}
     <div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="locationModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -50,6 +53,11 @@
 
 {% block js %}
     <script>
+
+        /**
+         * Ce code gère la soumission du formulaire de la modale en ajax
+         */
+
         //quand on tente de soumettre le formulaire de création de lieu (modale)...
         $("#location_form").on("submit", function(e){
             //j'empêche la soumission normale (pour que la page ne se recharge pas)
@@ -64,8 +72,8 @@
                 //en POST
                 "method": "post"
             })
-                //sera appelée lorsque la requête est terminée
-                //je reçois la nouvelle "Location" en response, avec son id
+            //sera appelée lorsque la requête est terminée
+            //je reçois la nouvelle "Location" en response, avec son id
             .done(function(response){
                 //je crée une nouvelle balise <option>, ayant pour value l'id du lieu
                 var option = $("<option>").attr("value", response.location.id);
@@ -78,6 +86,42 @@
                 //je ferme la modale
                 $('#locationModal').modal('hide');
             });
+        });
+    </script>
+
+    <script>
+
+        /**
+         * Ce code gère le remplissage de la liste des villes en fonction du code postal tapé
+         */
+
+        //quand on tente de soumettre le formulaire de création de lieu (modale)...
+        $("#location_zip").on("keyup", function(e){
+            //récupère la valeur tapée
+            let zip = $("#location_zip").val();
+
+            if (zip.length < 5){
+                return;
+            }
+
+            //j'envoie les données au serveur en ajax
+            $.ajax({
+                //ne marche que parce que je ne suis pas dans un fichier js externe
+                //url à laquelle je fais ma requête
+                "url": "{{ path('location_find_cities_by_zip') }}",
+                //j'envoie le code postal tapé
+                "data": {
+                    'zip': zip
+                },
+                //en GET
+                "method": "get"
+            })
+                //sera appelée lorsque la requête est terminée
+                //je reçois une liste de ville en response, déjà formattée en html
+                .done(function(response){
+                   console.log(response);
+                   $("#location_city").html(response);
+                });
         });
     </script>
 {% endblock %}

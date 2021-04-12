@@ -39,7 +39,12 @@ class UpdateEventStatesCommand extends Command
      * @param LoggerInterface $logger
      * @param string|null $name
      */
-    public function __construct(EntityManagerInterface $em, EventStateHelper $stateHelper, LoggerInterface $logger, string $name = null)
+    public function __construct(
+        EntityManagerInterface $em,
+        EventStateHelper $stateHelper,
+        LoggerInterface $logger,
+        string $name = null
+    )
     {
         $this->logger = $logger;
         $this->em = $em;

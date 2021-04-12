@@ -10,13 +10,7 @@ class MapBoxHelper
 
     public function getAddressCoordinates(string $streetAddress, string $zip, string $city, ?string $country = "fr"): array
     {
-        $client = new Client([
-            'verify' => false, //désactive la vérif ssl
-            'proxy' => [
-                'http'  => '10.0.0.248:8080', // Use this proxy with "http"
-                'https' => '10.0.0.248:8080', // Use this proxy with "https",
-            ]
-        ]);
+        $client = new Client();
 
         $search = urlencode("$streetAddress $zip $city");
         $token = self::MAPBOX_ACCESS_TOKEN;
