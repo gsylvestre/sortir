@@ -254,7 +254,7 @@ class Event
     public function isSubscribed(UserInterface $user): bool
     {
         foreach($this->getSubscriptions() as $sub){
-            if ($sub->getUser()->getId() == $user->getId()){
+            if ($sub->getUser() === $user){
                 return true;
             }
         }
