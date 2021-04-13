@@ -61,7 +61,13 @@ class EventController extends AbstractController
      */
     public function detail(Event $event)
     {
-         return $this->render('event/detail.html.twig', [
+        //todo : vérifier que le statut de la sortie permet son affichage
+
+        if (!$event){
+            throw $this->createNotFoundException("Cette sortie n'existe pas !");
+        }
+
+        return $this->render('event/detail.html.twig', [
             'event' => $event,
         ]);
     }
