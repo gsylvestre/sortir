@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New City{% endblock %}
+
+{% block body %}
+    <h1>Create new City</h1>
+
+    {{ include('admin/city/_form.html.twig') }}
+
+    <a href="{{ path('admin_city_index') }}">back to list</a>
+{% endblock %}

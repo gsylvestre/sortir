@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}City index{% endblock %}
+
+{% block body %}
+    <h1>City index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Insee</th>
+                <th>Zip</th>
+                <th>Lat</th>
+                <th>Lng</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for city in cities %}
+            <tr>
+                <td>{{ city.id }}</td>
+                <td>{{ city.name }}</td>
+                <td>{{ city.department }}</td>
+                <td>{{ city.insee }}</td>
+                <td>{{ city.zip }}</td>
+                <td>{{ city.lat }}</td>
+                <td>{{ city.lng }}</td>
+                <td>
+                    <a href="{{ path('admin_city_show', {'id': city.id}) }}">show</a>
+                    <a href="{{ path('admin_city_edit', {'id': city.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_city_new') }}">Create new</a>
+{% endblock %}
