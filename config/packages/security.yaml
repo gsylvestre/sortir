@@ -13,7 +13,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: lazy
+            anonymous: true
+            lazy: true
             guard:
                 authenticators:
                     #voir cette classe pour la manière moderne de gérer la sécurité

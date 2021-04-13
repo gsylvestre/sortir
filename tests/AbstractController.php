@@ -1,5 +1,8 @@
 <?php
 
+//depuis sf5.1, une méthode existe pour éviter tout ça !
+//https://symfony.com/blog/new-in-symfony-5-1-simpler-login-in-tests
+
 
 namespace App\Tests;
 
