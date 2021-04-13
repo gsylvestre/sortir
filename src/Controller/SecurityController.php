@@ -28,7 +28,8 @@ class SecurityController extends AbstractController
 {
     /**
      * Cette page affiche et traite le formulaire d'oubli de mot de passe
-     * On y receuille le mail du user et on envoie un message si tout est valide
+     * On y recueille le mail du user et on envoie un message si tout est valide
+     * Tout ce système a été fait à la mano, avant l'existence de la commande make !!!
      *
      * @Route("/mot-de-passe-oublie", name="security_forgot_password_step_1")
      */
