@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un participant{% endblock %}
+
+{% block body %}
+    <h3>Charger un csv de participants</h3>
+
+    {{ form(csvFileForm) }}
+
+    <a href="{{ path('admin_user_download_csv_model') }}">Télécharger un modèle de csv vide</a>
+{% endblock %}

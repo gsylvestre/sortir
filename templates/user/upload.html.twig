@@ -4,14 +4,7 @@
     <h2>Upload de photo de profil</h2>
 
     {{ form(form) }}
-    <script>
-        $('.custom-file-input').on('change', function(event) {
-            var inputFile = event.currentTarget;
-            $(inputFile).parent()
-                .find('.custom-file-label')
-                .html(inputFile.files[0].name);
-        });
-    </script>
+
     <a href="{{ path('user_profile', {id: app.user.id}) }}" class="btn btn-danger">Passer cette étape</a>
 {% endblock %}
 
