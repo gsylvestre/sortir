@@ -140,4 +140,30 @@ class EventStateHelper
 
         return false;
     }
+
+    /**
+     *
+     * Retourne true si la sortie peut être publiée
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function canBePublished(Event $event): bool
+    {
+        //doit être en statut "created" pour retourner true
+        return $event->getState()->getName() === "created";
+    }
+
+    /**
+     *
+     * Retourne true si la sortie peut être annulée
+     *
+     * @param Event $event
+     * @return bool
+     */
+    public function canBeCanceled(Event $event): bool
+    {
+        //doit être en statut "open" ou "closed" pour retourner true
+        return $event->getState()->getName() === "open" || $event->getState()->getName() === "closed";
+    }
 }

@@ -118,6 +118,9 @@ class EventRepository extends ServiceEntityRepository
         //maintenant que nos clauses OR regroupées sont créées, on les ajoute à la requête dans un grand AND()
         $qb->andWhere($checkBoxesOr);
 
+
+        $count = count($qb->getQuery()->getResult());
+
         //on récupère les résultats, en fonction des filtres précédent
         $query = $qb->getQuery();
         $results = $query->getResult();

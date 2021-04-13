@@ -117,8 +117,16 @@ class EventController extends AbstractController
      */
     public function publish(Event $event, EventStateHelper $stateHelper)
     {
-        //@TODO: vérifier que c'est bien l'auteur (ou un admin) qui est en train de publier
-        //@TODO: vérifier que ça peut être publié (pas annulée, pas closed, etc.)
+        //vérifie que c'est bien l'auteur (ou un admin) qui est en train de publier
+        if ($this->getUser() !== $event->getAuthor() && !$this->isGranted("ROLE_ADMIN")){
+            throw $this->createAccessDeniedException("Seul l'auteur de cette sortie peut la publier !");
+        }
+
+        //vérifie que ça peut être publié (pas annulée, pas closed, etc.)
+        if (!$stateHelper->canBePublished($event)){
+            $this->addFlash('danger', 'Cette sortie ne peut pas être publiée !');
+            return $this->redirectToRoute('event_list');
+        }
 
         $stateHelper->changeEventState($event, "open");
         return $this->redirectToRoute('event_list');
@@ -130,7 +138,11 @@ class EventController extends AbstractController
      */
     public function cancel(Event $event, EventStateHelper $stateHelper, Request $request)
     {
-        //@TODO: vérifier que la sortie n'est pas déjà annulée !
+        //vérifie que la sortie n'est pas déjà annulée ou autre
+        if (!$stateHelper->canBeCanceled($event)){
+            $this->addFlash('warning', 'Cette sortie ne peut pas être annulée !');
+            return $this->redirectToRoute('event_detail', ['id' => $event->getId()]);
+        }
 
         $eventCancelation = new EventCancelation();
         $eventCancelation->setEvent($event);
