@@ -43,13 +43,15 @@ class EventSearchType extends AbstractType
                 'label' => 'Entre le',
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datepicker']
+                'attr' => ['class' => 'datepicker'],
+                'format' => 'dd/MM/yyyy'
             ])
             ->add('start_at_max_date', DateType::class, [
                 'label' => 'Et le',
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datepicker']
+                'attr' => ['class' => 'datepicker'],
+                'format' => 'dd/MM/yyyy'
             ])
             ->add('is_organizer', CheckboxType::class, [
                 'label' => "Sorties dont je suis l'organisateur",

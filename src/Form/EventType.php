@@ -28,14 +28,16 @@ class EventType extends AbstractType
                 'label' => 'Débute le...',
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datetimepicker']
+                'attr' => ['class' => 'datetimepicker'],
+                'format' => 'dd/MM/yyyy HH:mm'
             ])
             ->add('duration', IntegerType::class, ['label' => 'Durée, en heures'])
             ->add('registrationLimitDate', null, [
                 'label' => "Date limite d'inscription",
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datetimepicker']
+                'attr' => ['class' => 'datetimepicker'],
+                'format' => 'dd/MM/yyyy HH:mm'
             ])
             ->add('maxRegistrations', IntegerType::class, ['label' => 'Nombre max de participants'])
             ->add('location', EntityType::class, [

@@ -83,14 +83,24 @@
         <script>
             //active le flatpickr sur toutes les pages
             flatpickr(".datepicker", {
-                locale: "fr"
+                locale: "fr",
+                dateFormat: "d/m/Y",
             });
 
             //active le flatpickr avec les heures sur toutes les pages
             flatpickr(".datetimepicker", {
                 enableTime: true,
                 time_24hr: true,
+                dateFormat: "d/m/Y H:i",
                 locale: "fr"
+            });
+        </script>
+        <script>
+            $('.custom-file-input').on('change', function(event) {
+                var inputFile = event.currentTarget;
+                $(inputFile).parent()
+                    .find('.custom-file-label')
+                    .html(inputFile.files[0].name);
             });
         </script>
         {% block js %}{% endblock %}
