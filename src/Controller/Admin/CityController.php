@@ -19,14 +19,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class CityController extends AbstractController
 {
     /**
-     * @Route("/", name="admin_city_index", methods={"GET"})
+     * @Route("/liste/{page}", name="admin_city_index", methods={"GET"}, requirements={"page": "\d+"})
      */
-    public function index(CityRepository $cityRepository): Response
+    public function index(CityRepository $cityRepository, int $page = 1): Response
     {
-        //TODO: pagination
+        $paginatedCities = $cityRepository->findPaginatedCities($page);
 
         return $this->render('admin/city/index.html.twig', [
-            'cities' => $cityRepository->findBy([], ['name' => 'ASC'], 1000),
+            'cities' => $paginatedCities
         ]);
     }
 

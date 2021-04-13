@@ -5,6 +5,10 @@
 {% block body %}
     <h1>City index</h1>
 
+    <div class="navigation">
+        {{ knp_pagination_render(cities) }}
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -40,6 +44,10 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(cities) }}
+    </div>
 
     <a href="{{ path('admin_city_new') }}">Create new</a>
 {% endblock %}
