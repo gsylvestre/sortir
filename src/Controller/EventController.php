@@ -24,9 +24,9 @@ class EventController extends AbstractController
     /**
      * Liste des sorties et recherche/filtres
      *
-     * @Route("", name="list")
+     * @Route("/{page}", name="list", requirements={"page": "\d+"})
      */
-    public function list(Request $request)
+    public function list(Request $request, int $page = 1)
     {
         //valeurs par défaut du formulaire de recherche
         //sous forme de tableau associatif, car le form n'est pas associée à une entité
@@ -46,10 +46,10 @@ class EventController extends AbstractController
 
         //appelle ma méthode perso de recherche et filtre
         $eventRepo = $this->getDoctrine()->getRepository(Event::class);
-        $events = $eventRepo->search($this->getUser(), $searchData);
+        $paginatedEvents = $eventRepo->search($page, 20, $this->getUser(), $searchData);
 
         return $this->render('event/list.html.twig', [
-            'events' => $events,
+            'paginatedEvents' => $paginatedEvents,
             'searchForm' => $searchForm->createView()
         ]);
     }

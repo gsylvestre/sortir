@@ -8,6 +8,7 @@
         "fzaninotto/faker": "^1.9",
         "gsylvestre/php-token-generator": "^0.1.0",
         "guzzlehttp/guzzle": "^6.5",
+        "knplabs/knp-paginator-bundle": "^5.4",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.2.*",

@@ -27,7 +27,11 @@
             {{ form_end(searchForm) }}
     </div>
 
-    {% if events %}
+    <div class="navigation">
+        {{ knp_pagination_render(paginatedEvents) }}
+    </div>
+
+    {% if paginatedEvents %}
         <table class="table table-striped">
             <tr>
                 <th>Intitulé</th>
@@ -39,7 +43,7 @@
                 <th class="d-none d-lg-table-cell">École</th>
                 <th>Action</th>
             </tr>
-        {% for event in events %}
+        {% for event in paginatedEvents %}
             <tr>
                 <td><a href="{{ path('event_detail', {'id': event.id}) }}">#{{ event.id }} {{ event.name }}</a></td>
                 <td>{{ event.state.prettyName }}</td>
@@ -66,6 +70,10 @@
             </tr>
         {% endfor %}
         </table>
+
+        <div class="navigation">
+            {{ knp_pagination_render(paginatedEvents) }}
+        </div>
     {% else %}
         <div>Aucune sortie !</div>
     {% endif %}

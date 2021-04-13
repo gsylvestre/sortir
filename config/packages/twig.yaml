@@ -2,3 +2,7 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     # active le thème de formulaire bootstrap
     form_themes: ['bootstrap_4_layout.html.twig']
+
+knp_paginator:
+    template:
+        pagination: '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig'

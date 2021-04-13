@@ -7,6 +7,7 @@ use App\Entity\EventState;
 use App\Entity\EventSubscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -17,9 +18,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class EventRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorInterface $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Event::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -30,7 +34,7 @@ class EventRepository extends ServiceEntityRepository
      * @param array|null $searchData
      * @return array|mixed
      */
-    public function search(UserInterface $user, ?array $searchData)
+    public function search(int $page = 1, int $numPerPage = 10, UserInterface $user, ?array $searchData)
     {
         //un seul query builder, alias de event => e
         $qb = $this->createQueryBuilder('e');
@@ -123,8 +127,9 @@ class EventRepository extends ServiceEntityRepository
 
         //on récupère les résultats, en fonction des filtres précédent
         $query = $qb->getQuery();
-        $results = $query->getResult();
 
-        return $results;
+        $pagination = $this->paginator->paginate($query, $page, $numPerPage);
+
+        return $pagination;
     }
 }
