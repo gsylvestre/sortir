@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\EditPasswordType;
 use App\Form\ProfileType;
 use App\Form\ProfileUploadType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  *
@@ -19,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     /**
-     * Chargement d'une photo de profil
+     * Affichage du profil
      *
      * @Route("/{id}", name="user_profile", requirements={"id": "\d+"})
      */
@@ -131,6 +134,42 @@ class UserController extends AbstractController
 
         return $this->render('user/edit.html.twig', [
             'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Modification du profil
+     *
+     * @Route("/modification/mot-de-passe", name="user_edit_password")
+     */
+    public function editPassword(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        //récupère le user en session
+        //ne jamais récupérer le user en fonction de l'id dans l'URL !
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(EditPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $hash = $passwordEncoder->encodePassword($user, $form->get('new_password')->getData());
+            $user->setPassword($hash);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Mot de passe modifié !');
+            //sinon ça bugue dans la session, ça me déconnecte
+            //refresh() permet de re-récupérer les données fraîches depuis la bdd
+            $entityManager->refresh($user);
+
+            return $this->redirectToRoute("user_profile", ["id" => $user->getId()]);
+        }
+
+        return $this->render('user/edit_password.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

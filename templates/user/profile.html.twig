@@ -13,7 +13,8 @@
 
     {% if app.user == user %}
         <a href="{{ path('user_edit') }}">Modifier mon profil</a><br>
-        <a href="{{ path('user_upload') }}">Modifier mon image</a>
+        <a href="{{ path('user_upload') }}">Modifier mon image</a><br>
+        <a href="{{ path('user_edit_password') }}">Modifier mon mot de passe</a>
     {% endif %}
 {% endblock %}
 
