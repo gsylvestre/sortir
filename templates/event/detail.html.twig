@@ -14,8 +14,15 @@
         &#8734;
     {% endif %}
     </div>
-    <div>{{ event.startDate|date("d-m-Y à H:i") }}</div>
-    <div>{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</div>
+    <div>La sortie début le : {{ event.startDate|date("d-m-Y à H:i") }}</div>
+    <div>
+        Organisée par
+        {% if not event.author.isDeleted and event.author.isActive %}
+            <a href="{{ path('user_profile', {id: event.author.id}) }}" title="Voir son profil">{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</a>
+        {% else %}
+            un utilisateur supprimé ou banni
+        {% endif %}
+    </div>
     <div>{{ event.author.school.name }}</div>
     <div>
         {% if event.state.name == 'open' %}

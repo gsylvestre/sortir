@@ -64,11 +64,17 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
             throw new InvalidCsrfTokenException();
         }
 
+        /** @var User $user */
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
         if (!$user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Cet email n\'est pas connu.');
+        }
+
+        //si utilisateur supprimé
+        if ($user->getIsDeleted()){
+            throw new CustomUserMessageAuthenticationException('Compte supprimé 🤣');
         }
 
         //si isActive n'est pas égal à 1, on bloque tout

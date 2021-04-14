@@ -11,6 +11,7 @@
             <th>Prénom</th>
             <th>Email</th>
             <th>Date inscription</th>
+            <th>Rôle</th>
             <th>Actions</th>
         </tr>
 
@@ -20,9 +21,11 @@
                 <td>{{ user.firstname }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.createdDate|date("d-m-Y") }}</td>
+                <td>{{ user.isAdmin ? "admin" : "user" }}</td>
                 <td><a href="{{ path('admin_user_ban', {id: user.id}) }}">
                     {{ user.isActive ? 'Bannir' : 'Débannir' }}
-                </a></td>
+                </a> / <a href="{{ path('admin_user_delete', {id: user.id}) }}" onclick="return confirm('sûr ?')">Supprimer</a>
+                / <a href="{{ path('user_profile', {'id': user.id}) }}">Profil</a></td>
             </tr>
         {% endfor %}
 

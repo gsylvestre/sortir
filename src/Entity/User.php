@@ -124,6 +124,11 @@ class User implements UserInterface
      */
     private $pictureUpload;
 
+    /**
+     * @ORM\Column(type="boolean", options={"defaults": 0})
+     */
+    private $isDeleted = false;
+
 
     public function __construct()
     {
@@ -377,6 +382,18 @@ class User implements UserInterface
     public function setPictureUpload(?UploadedFile $pictureUpload): void
     {
         $this->pictureUpload = $pictureUpload;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
     }
 
 }

@@ -28,6 +28,13 @@ class UserController extends AbstractController
      */
     public function profile(User $user): Response
     {
+        if (!$user->getIsActive()){
+            throw $this->createNotFoundException("Utilisateur banni !");
+        }
+        if ($user->getIsDeleted()){
+            throw $this->createNotFoundException("Utilisateur supprimé !");
+        }
+
         return $this->render('user/profile.html.twig', [
             'user' => $user
         ]);

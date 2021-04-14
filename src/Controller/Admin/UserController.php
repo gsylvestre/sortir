@@ -21,6 +21,27 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
     /**
+     * @Route("/{id}/supprimer", name="admin_user_delete")
+     */
+    public function delete(User $user, EntityManagerInterface $entityManager)
+    {
+        //si c'est un admin qui est en train de se faire bannir...
+        if ($user->getIsAdmin()){
+            $this->addFlash('danger', "Vous ne pouvez pas bannir un admin dude.");
+            return $this->redirectToRoute('admin_user_list');
+        }
+
+        $user->setIsDeleted(true);
+        $user->setIsActive(false); //pas sûr s'il faut faire ça
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', "L'utilisateur ".$user->getEmail()." a bien été supprimé ! Radical !");
+        return $this->redirectToRoute('admin_user_list');
+    }
+
+
+    /**
      * @Route("/{id}/bannir", name="admin_user_ban")
      */
     public function ban(User $user)
@@ -49,7 +70,8 @@ class UserController extends AbstractController
     public function list()
     {
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $users = $userRepo->findBy([], ["lastname" => "ASC"]);
+        //on ne récupère pas les "supprimés"
+        $users = $userRepo->findBy(["isDeleted" => false], ["lastname" => "ASC"]);
 
         return $this->render('admin/user/list.html.twig', [
             'users' => $users
