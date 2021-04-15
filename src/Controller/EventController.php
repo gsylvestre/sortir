@@ -10,6 +10,7 @@ use App\Form\EventCancelationType;
 use App\Form\EventSearchType;
 use App\Form\EventType;
 use App\Form\LocationType;
+use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,14 +60,18 @@ class EventController extends AbstractController
      *
      * @Route("/details/{id}", name="detail")
      */
-    public function detail(Event $event)
+    public function detail($id, EventRepository $eventRepository)
     {
+
+        $event = $eventRepository->findWithJoins($id);
+
         //seuls les admins et l'auteur peuvent passer ici
         if(!$this->isGranted("ROLE_ADMIN")) {
             if ($event->getState()->getName() === "created" && $event->getAuthor() !== $this->getUser()) {
                 throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
             }
         }
+
 
         if (!$event){
             throw $this->createNotFoundException("Cette sortie n'existe pas !");

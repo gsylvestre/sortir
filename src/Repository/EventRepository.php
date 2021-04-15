@@ -27,6 +27,27 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère une sortie avec plein de jointures, pour éviter les 10000 requêtes à la bdd
+     * Ce sont surtout les récupération des utilisateurs inscrits qui posaient problème
+     */
+    public function findWithJoins(int $id)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->andWhere('e.id = :id')->setParameter(':id', $id)
+
+            ->leftJoin('e.state', 's')->addSelect('s')
+            ->leftJoin('e.author', 'a')->addSelect('a')
+            ->leftJoin('e.subscriptions', 'sub')->addSelect('sub')
+            ->leftJoin('sub.user', 'subuser')->addSelect('subuser')
+            ->leftJoin('e.location', 'loc')->addSelect('loc');
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+
+
+    /**
      * Requête perso à la bdd pour filtrer et rechercher les sorties
      * Reçoit les données du form sous forme de tableau associatif
      *

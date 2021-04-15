@@ -17,13 +17,41 @@
                 <div class="alert alert-warning text-center">Cette sortie est méga vieille</div>
             {% elseif event.state.name == 'ongoing' %}
                 <div class="alert alert-warning text-center">Cette sortie est en cours !</div>
-            {% elseif event.state.name == 'closed' %}
-                <div class="alert alert-warning text-center">Trop tard, les inscriptions sont fermées !</div>
+            {% elseif event.state.name == 'closed' and not event.isSubscribed(app.user) %}
+                <div class="alert alert-warning text-center">Trop tard, les inscriptions sont fermées ! snif</div>
+            {% elseif event.state.name == 'closed' and  event.isSubscribed(app.user) %}
+                <div class="alert alert-success text-center">Les inscriptions sont fermées mais vous êtes inscrit fiou !</div>
             {% elseif event.state.name == 'open' %}
                 <div class="alert alert-success text-center">Les inscriptions sont ouvertes !</div>
             {% endif %}
 
+
             <div>{{ event.infos|nl2br }}</div>
+
+
+            <h4 class="lead mt-3">La sortie a lieu à {{ event.location.city.name }} ({{ event.location.zip }})</h4>
+            {% if event.location.longitude %}
+                <div id="map" class="mt-3"></div>
+                <script>
+                    mapboxgl.accessToken = 'pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg';
+                    var map = new mapboxgl.Map({
+                        container: 'map', // container id
+                        style: 'mapbox://styles/gsylvestre/ck6lxcmxf0fv61irviqd3z0cd', // stylesheet location
+                        center: [{{ event.location.longitude }}, {{ event.location.latitude }}], // starting position [lng, lat]
+                        zoom: 10 // starting zoom
+                    });
+
+                    // create the popup
+                    var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                        "<h5>{{ event.location.name }}</h5>{{ event.location.street }} {{ event.location.city }} "
+                    );
+
+                    var marker = new mapboxgl.Marker();
+                    marker.setPopup(popup);
+                    marker.setLngLat([{{ event.location.longitude }}, {{ event.location.latitude }}]);
+                    marker.addTo(map);
+                </script>
+            {% endif %}
         </div>
         <div class="col-sm-4">
             <div class="card" style="width: 18rem;">
@@ -73,38 +101,8 @@
 
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <h4 class="lead mt-3">La sortie a lieu à {{ event.location.city.name }} ({{ event.location.zip }})</h4>
-            {% if event.location.longitude %}
-                <div id="map" class="mt-3"></div>
-                <script>
-                    mapboxgl.accessToken = 'pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg';
-                    var map = new mapboxgl.Map({
-                        container: 'map', // container id
-                        style: 'mapbox://styles/gsylvestre/ck6lxcmxf0fv61irviqd3z0cd', // stylesheet location
-                        center: [{{ event.location.longitude }}, {{ event.location.latitude }}], // starting position [lng, lat]
-                        zoom: 10 // starting zoom
-                    });
 
-                    // create the popup
-                    var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-                        "<h5>{{ event.location.name }}</h5>{{ event.location.street }} {{ event.location.city }} "
-                    );
-
-                    var marker = new mapboxgl.Marker();
-                    marker.setPopup(popup);
-                    marker.setLngLat([{{ event.location.longitude }}, {{ event.location.latitude }}]);
-                    marker.addTo(map);
-                </script>
-            {% endif %}
-        </div>
-        <div class="col-md-4">
             <h4 class="lead mt-3">Inscrits à la sortie</h4>
-
-
             <div>Inscription maximum :
                 {% if event.maxRegistrations %}
                     {{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}
@@ -113,15 +111,18 @@
                 {% endif %}
             </div>
 
-            <div>Nombre d'inscrits : {{ event.subscriptions|length }}</div>
 
-            <ul>
-                {% for sub in event.subscriptions %}
-                    <li><a href="{{ path('user_profile', {id: sub.user.id}) }}">{{ sub.user.firstname }} {{ sub.user.lastname }}</a> ({{ sub.createdDate|date('d-m-Y') }})</li>
-                {% endfor %}
-            </ul>
+            <details {{ event.subscriptions|length > 20 ? '' : 'open' }}>
+                <summary>{{ event.subscriptions|length }} personnes inscrites !</summary>
+                <ul>
+                    {% for sub in event.subscriptions %}
+                        <li><a href="{{ path('user_profile', {id: sub.user.id}) }}">{{ sub.user.firstname }} {{ sub.user.lastname }}</a> ({{ sub.createdDate|date('d-m-Y') }})</li>
+                    {% endfor %}
+                </ul>
+            </details>
         </div>
     </div>
+
 {% endblock %}
 
 {% block title %}{{ event.name }}{% endblock %}
