@@ -21,7 +21,9 @@ class EventSubscription
      */
     public function prePersist()
     {
-        $this->setCreatedDate(new \DateTime());
+        if (empty($this->getCreatedDate())){
+            $this->setCreatedDate(new \DateTime());
+        }
     }
 
     /**

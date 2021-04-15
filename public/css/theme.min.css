@@ -1,5 +1,4 @@
 /*! Tophat `Sunset` Bootstrap 4.3.1 theme */
-@import url(https://fonts.googleapis.com/css?family=Voltaire:200,300,400,700);
 /*!
  * Bootstrap v4.1.1 (https://getbootstrap.com/)
  * Copyright 2011-2018 The Bootstrap Authors
@@ -301,7 +300,6 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-bottom: 0.5rem;
-    font-family: Voltaire;
     font-weight: 500;
     line-height: 1.2;
     color: inherit; }

@@ -1,21 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2>#{{ event.id }} {{ event.name }}</h2>
+    <h2>{{ event.name }}</h2>
+    <h3>le {{ event.startDate|date("d-m-Y à H:i") }}</h3>
+    <div>Inscriptions jusqu'au {{ event.registrationLimitDate|date("d-m-Y à H:i") }}</div>
+
+
     <h3>État de la sortie : {{ event.state.prettyName }}</h3>
     <div>{{ event.infos|nl2br }}</div>
 
-    <div>Nombre d'inscrits : {{ event.subscriptions|length }}</div>
-
-    <div>Inscription maximum :
-    {% if event.maxRegistrations %}
-        {{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}
-    {% else %}
-        &#8734;
-    {% endif %}
-    </div>
-    <div>La sortie début le : {{ event.startDate|date("d-m-Y à H:i") }}</div>
-    <div>Inscriptions jusqu'au : {{ event.registrationLimitDate|date("d-m-Y à H:i") }}</div>
     <div>
         Organisée par
         {% if not event.author.isDeleted and event.author.isActive %}
@@ -23,11 +16,12 @@
         {% else %}
             un utilisateur supprimé ou banni
         {% endif %}
-    </div>
-    <div>{{ event.author.school.name }}</div>
+    du campus de {{ event.author.school.name }} le {{ event.creationDate|date("d-m-Y") }}</div>
     <div>
         {% if event.state.name == 'open' %}
             <a class="btn btn-{{ event.isSubscribed(app.user) ? "danger" : "success" }}" href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
+        {% elseif event.state.name == 'closed' and event.isSbuscribed(app.user) %}
+            <a class="btn btn-danger" href="{{ path('subscription_toggle', {'id': event.id}) }}">Me désinscrire</a>
         {% elseif event.state.name == 'created' and event.author == app.user %}
             <a href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>
             <a href="#">Modifier</a>
@@ -37,28 +31,53 @@
         {% endif %}
     </div>
 
-    {% if event.location.longitude %}
-        <div id="map" class="mt-3"></div>
-        <script>
-            mapboxgl.accessToken = 'pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg';
-            var map = new mapboxgl.Map({
-                container: 'map', // container id
-                style: 'mapbox://styles/gsylvestre/ck6lxcmxf0fv61irviqd3z0cd', // stylesheet location
-                center: [{{ event.location.longitude }}, {{ event.location.latitude }}], // starting position [lng, lat]
-                zoom: 10 // starting zoom
-            });
+    <div class="row">
+        <div class="col-md-8">
+            <h4 class="lead mt-3">La sortie a lieu à {{ event.location.city.name }} ({{ event.location.zip }})</h4>
+            {% if event.location.longitude %}
+                <div id="map" class="mt-3"></div>
+                <script>
+                    mapboxgl.accessToken = 'pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg';
+                    var map = new mapboxgl.Map({
+                        container: 'map', // container id
+                        style: 'mapbox://styles/gsylvestre/ck6lxcmxf0fv61irviqd3z0cd', // stylesheet location
+                        center: [{{ event.location.longitude }}, {{ event.location.latitude }}], // starting position [lng, lat]
+                        zoom: 10 // starting zoom
+                    });
 
-            // create the popup
-            var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-                "<h5>{{ event.location.name }}</h5>{{ event.location.street }} {{ event.location.city }} "
-            );
+                    // create the popup
+                    var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                        "<h5>{{ event.location.name }}</h5>{{ event.location.street }} {{ event.location.city }} "
+                    );
 
-            var marker = new mapboxgl.Marker();
-            marker.setPopup(popup);
-            marker.setLngLat([{{ event.location.longitude }}, {{ event.location.latitude }}]);
-            marker.addTo(map);
-        </script>
-    {% endif %}
+                    var marker = new mapboxgl.Marker();
+                    marker.setPopup(popup);
+                    marker.setLngLat([{{ event.location.longitude }}, {{ event.location.latitude }}]);
+                    marker.addTo(map);
+                </script>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <h4 class="lead mt-3">Inscrits à la sortie</h4>
+
+
+            <div>Inscription maximum :
+                {% if event.maxRegistrations %}
+                    {{ event.maxRegistrations - event.subscriptions|length }} / {{ event.maxRegistrations }}
+                {% else %}
+                    &#8734;
+                {% endif %}
+            </div>
+
+            <div>Nombre d'inscrits : {{ event.subscriptions|length }}</div>
+
+            <ul>
+                {% for sub in event.subscriptions %}
+                    <li><a href="{{ path('user_profile', {id: sub.user.id}) }}">{{ sub.user.firstname }} {{ sub.user.lastname }}</a> ({{ sub.createdDate|date('d-m-Y') }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endblock %}
 
 {% block title %}{{ event.name }}{% endblock %}
