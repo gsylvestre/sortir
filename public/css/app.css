@@ -114,3 +114,22 @@ footer:hover .footer-logo {
     max-width: 100%;
     max-height: 100%;
 }
+
+.event-pagination {
+    padding: 20px 0 0 0;
+}
+
+ul.pagination {
+    justify-content: center;
+}
+
+.event-filters-checkboxes {
+}
+
+.event-filters-checkboxes .form-group {
+    margin-bottom: 0;
+}
+
+.event-table {
+    font-size: 0.9rem;
+}
