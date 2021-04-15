@@ -1,13 +1,19 @@
 body {
-    font-family: Merriweather, serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-image: linear-gradient(
+                    rgba(255, 255, 255, 0.9),
+                    rgba(255, 255, 255, 0.9)
+            ),
+            url(../img/hellfest.jpg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 header {
-    padding: 10px 0 0 0;
-    margin-bottom: 20px;
+    padding: 10px 0 10px 0;
 }
 
 header .container {
@@ -60,6 +66,7 @@ header .user-nav a {
 
 main {
     flex-grow: 1;
+    margin-top: 20px;
 }
 
 footer {
@@ -77,24 +84,19 @@ footer:hover .footer-logo {
     transform: rotate(-345deg) scaleX(-1);
 }
 
-.hero {
+.home-hero {
     background-image: url("../img/hellfest.jpg");
-    background-position: top center;
-    overflow: hidden;
-    padding: 100px 10px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
 }
 
-.hero h2,
-.hero h4 {
+.home-hero h2,
+.home-hero p {
     background-color: black;
     color: #fff;
     display: inline-block;
-    padding: 0.5rem;
-
+    padding: 1rem 2rem;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 }

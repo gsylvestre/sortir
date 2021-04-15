@@ -59,7 +59,10 @@
             </div>
         </header>
 
+        {% block homehero %}{% endblock %}
+
         <main>
+
             <div class="container">
                 {# read and display all flash messages #}
                 {% for label, messages in app.flashes %}

@@ -44,6 +44,8 @@ class CityController extends AbstractController
             $entityManager->persist($city);
             $entityManager->flush();
 
+            $this->addFlash('success', $city->getName() . " a bien été créée !");
+
             return $this->redirectToRoute('admin_city_index');
         }
 
@@ -74,6 +76,8 @@ class CityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', $city->getName() . " a bien été modifiée !");
+
             return $this->redirectToRoute('admin_city_index');
         }
 
@@ -88,6 +92,12 @@ class CityController extends AbstractController
      */
     public function delete(Request $request, City $city): Response
     {
+        //si la ville est associée des lieux, on ne peut pas la supprimer
+        if (!empty($city->getLocations())){
+            $this->addFlash('warning', $city->getName() . " est associée à des lieux, et ne peut être supprimée !");
+            return $this->redirectToRoute('admin_city_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$city->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($city);

@@ -2,10 +2,27 @@
 
 {% block title %}Sortir.com!{% endblock %}
 
-{% block body %}
-    <div class="jumbotron text-center hero">
-        <h2>Les sorties à l'ENI</h2>
-        <h4>{{ allEventCount }} sorties organisées !</h4>
-        <a class="btn btn-dark mt-3" href="{{ path('event_list') }}" title="Voir toutes les sorties">Voir toutes les sorties !</a>
+{% block homehero %}
+<div class="bg-primary home-hero">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12">
+                <div class="text-center m-0 vh-100 d-flex flex-column justify-content-center align-items-center text-light">
+                    <h2 class="display-4">Les sorties à l'ENI</h2>
+                    <p class="lead">{{ allEventCount }} sorties organisées !</p>
+                    <div>
+                        <a class="btn btn-dark mt-3" href="{{ path('event_list') }}" title="Voir toutes les sorties">Voir toutes les sorties !</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+{% endblock %}
+
+{% block body %}
+    <h2>On va sortir</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aut dolor earum laudantium minima molestiae quis temporibus ut! Accusantium adipisci consequatur hic illum nemo odit, quod quos repellat reprehenderit veniam!   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur corporis earum quam repellat unde. Ad consequatur dolore est ex, labore maxime molestiae nam nesciunt omnis provident quae quisquam repudiandae sed?</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur corporis earum quam repellat unde. Ad consequatur dolore est ex, labore maxime molestiae nam nesciunt omnis provident quae quisquam repudiandae sed?</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur corporis earum quam repellat unde. Ad consequatur dolore est ex, labore maxime molestiae nam nesciunt omnis provident quae quisquam repudiandae sed?</p>
 {% endblock %}
