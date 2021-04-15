@@ -77,7 +77,7 @@ class EventController extends AbstractController
      *
      * @Route("/ajout", name="create")
      */
-    public function create(Request $request)
+    public function create(Request $request, EventStateHelper $stateHelper)
     {
         $event = new Event();
         $event->setCreationDate(new \DateTime());
@@ -93,9 +93,7 @@ class EventController extends AbstractController
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()){
             //on donne l'état "créée" à cette sortie
-            /** @var EventState $createdState */
-            $createdState = $eventStateRepo->findOneBy(['name' => 'created']);
-            $event->setState($createdState);
+            $event->setState($stateHelper->getStateByName('created'));
 
             //on renseigne son auteur (le user actuel)
             $event->setAuthor($this->getUser());
