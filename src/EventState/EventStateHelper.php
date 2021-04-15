@@ -68,8 +68,8 @@ class EventStateHelper
     {
         $oneMonthAgo = new \DateTime("-1 month");
         if (
-            $event->getEndDate() < $oneMonthAgo &&
-            $event->getState()->getName() !== "archived"
+            $event->getEndDate() < $oneMonthAgo
+            && $event->getState()->getName() !== "archived"
         ){
             return true;
         }
@@ -89,9 +89,9 @@ class EventStateHelper
         $now = new \DateTime();
         if (
             $event->getState()->getName() === "closed" &&
-            $event->getStartDate() < $now &&
-            $event->getEndDate() > $now &&
-            $event->getState()->getName() !== "ongoing"
+            $event->getStartDate() < $now
+            && $event->getEndDate() > $now
+            && $event->getState()->getName() !== "ongoing"
         ){
             return true;
         }
@@ -109,10 +109,12 @@ class EventStateHelper
     public function shouldChangeStateToEnded(Event $event): bool
     {
         $now = new \DateTime();
+        $oneMonthAgo = new \DateTime("-1 month");
         if (
             $event->getState()->getName() === "ongoing" &&
-            $event->getEndDate() < $now &&
-            $event->getState()->getName() !== "ended"
+            $event->getEndDate() >= $oneMonthAgo &&
+            $event->getEndDate() <= $now
+            && $event->getState()->getName() !== "ended"
         ){
             return true;
         }
@@ -130,11 +132,15 @@ class EventStateHelper
     public function shouldChangeStateToClosed(Event $event): bool
     {
         $now = new \DateTime();
+
         if (
             $event->getState()->getName() === "open" &&
-            $event->getRegistrationLimitDate() <= $now &&
-            $event->getState()->getName() !== "closed"
+            $event->getRegistrationLimitDate() <= $now
+            && $event->getStartDate() > $now
+            && $event->getState()->getName() !== "closed"
         ){
+            echo $event->getRegistrationLimitDate()->format("Y-m-d H:i") . " <= " . $now->format("Y-m-d H:i") . "\r\n";
+            echo "closing";
             return true;
         }
 
@@ -165,5 +171,37 @@ class EventStateHelper
     {
         //doit être en statut "open" ou "closed" pour retourner true
         return $event->getState()->getName() === "open" || $event->getState()->getName() === "closed";
+    }
+
+    /**
+     * devine l'état d'un event, utile pour les fixtures
+     * grosse duplication des méthode ci-dessus, mais pas trop le choix
+     */
+    public function guessEventState(Event $event): string
+    {
+        $now = new \DateTime();
+        $oneMonthAgo = new \DateTime("-1 month");
+
+        if ($event->getEndDate() < $oneMonthAgo){
+            return "archived";
+        }
+
+        if ($event->getEndDate() >= $oneMonthAgo && $event->getEndDate() <= $now){
+            return "ended";
+        }
+
+        if ($event->getStartDate() < $now && $event->getEndDate() > $now){
+            return "ongoing";
+        }
+
+        if ($event->getRegistrationLimitDate() <= $now && $event->getStartDate() > $now){
+            return "closed";
+        }
+
+        if ($event->getStartDate() > $now && $event->getRegistrationLimitDate() > $now){
+            return "open";
+        }
+
+        return "created";
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\EventCancelation;
+use App\EventState\EventStateHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,14 +44,16 @@ class FakerFixturesCommand extends Command
     protected $doctrine;
     /** @var UserPasswordEncoderInterface **/
     protected $passwordEncoder;
+    private EventStateHelper $stateHelper;
 
-    public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, $name = null)
+    public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, EventStateHelper $stateHelper, $name = null)
     {
         parent::__construct($name);
         //faker nous permet de générer des données réalistes, en français
         $this->faker = \Faker\Factory::create("fr_FR");
         $this->doctrine = $doctrine;
         $this->passwordEncoder = $passwordEncoder;
+        $this->stateHelper = $stateHelper;
     }
 
     protected function configure()
@@ -101,12 +104,13 @@ class FakerFixturesCommand extends Command
 
         //au lieu de s'embêter à essayer d'avoir des états cohérents directement
         //ici on lance notre commande de mise à jour des états automatiquement !
-        $this->io->section("Mise à jour des états !");
-        $input = new ArrayInput([]);
-        $command = $this->getApplication()->find('app:update-event-states');
-        $returnCode = $command->run($input, $output);
+        //$this->io->section("Mise à jour des états !");
+        //$input = new ArrayInput([]);
+        //$command = $this->getApplication()->find('app:update-event-states');
+        //$returnCode = $command->run($input, $output);
 
-        return $returnCode;
+        //return $returnCode;
+        return Command::SUCCESS;
     }
 
 
@@ -270,24 +274,41 @@ class FakerFixturesCommand extends Command
         $this->progress->setMessage("loading events");
 
         $allLocations = $this->doctrine->getRepository(Location::class)->findAll();
-        $allEventStates = $this->doctrine->getRepository(EventState::class)->findAll();
         $allUsers = $this->doctrine->getRepository(User::class)->findAll();
+        $canceledState = $this->doctrine->getRepository(EventState::class)->findOneBy(['name' => 'canceled']);
 
         for($i=0; $i<$num; $i++){
             $event = new Event();
 
             $event->setName( $this->faker->catchPhrase );
 
-            $event->setCreationDate( $this->faker->dateTimeBetween($startDate = "- 3 months") );
-            $event->setRegistrationLimitDate( $this->faker->dateTimeBetween($event->getCreationDate(), $event->getCreationDate()->add(new \DateInterval("P60D")) ));
-            $event->setStartDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate(), $event->getRegistrationLimitDate()->add(new \DateInterval("P2D")) ));
+            $event->setCreationDate( $this->faker->dateTimeBetween($startDate = "- 10 months") );
 
-            $event->setDuration( $this->faker->optional($chancesOfValue = 0.9, $default = null)->numberBetween($min = 1, $max = 6) );
+            //clône pour éviter de modifier la date de création
+            $tmp = clone $event->getCreationDate();
+            $tmp->add(new \DateInterval("P120D"));
+            $event->setRegistrationLimitDate( $this->faker->dateTimeBetween($event->getCreationDate(), $tmp ));
+
+            $tmp = clone $event->getRegistrationLimitDate();
+            $tmp->add(new \DateInterval("P20D"));
+            $event->setStartDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate(), $tmp ));
+
+            $event->setDuration( $this->faker->optional($chancesOfValue = 0.9, $default = null)->numberBetween($min = 1, $max = 144) );
             $event->setMaxRegistrations( $this->faker->optional($chancesOfValue = 0.7, $default = null)->numberBetween($min = 7, $max = 160) );
             $event->setInfos( $this->faker->paragraphs($nb = $this->faker->randomDigitNot(0), $asText = true) );
             $event->setLocation( $this->faker->randomElement($allLocations) );
-            $event->setState( $this->faker->randomElement($allEventStates) );
             $event->setAuthor( $this->faker->randomElement($allUsers) );
+
+            $stateName = $this->stateHelper->guessEventState($event);
+            $state = $this->doctrine->getRepository(EventState::class)->findOneBy(['name' => $stateName]);
+            $event->setState($state);
+
+            //on annule certaines sorties (20% des ouvertes ou fermées)
+            if ($stateName === "open" || $stateName === "closed") {
+                if ($this->faker->numberBetween(0, 100) > 80) {
+                    $event->setState($canceledState);
+                }
+            }
 
             $this->doctrine->getManager()->persist($event);
             $this->progress->advance();
@@ -316,7 +337,7 @@ class FakerFixturesCommand extends Command
             for($i=0; $i<$num; $i++){
                 $eventSubscription = new EventSubscription();
 
-                $eventSubscription->setCreatedDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate()->sub(new \DateInterval("P30D")), $event->getRegistrationLimitDate()) );
+                $eventSubscription->setCreatedDate( $this->faker->dateTimeBetween($event->getCreationDate(), $event->getRegistrationLimitDate()) );
                 $user = $this->faker->unique()->randomElement($allUsers);
                 $eventSubscription->setUser($user);
                 $eventSubscription->setEvent( $event );

@@ -19,6 +19,16 @@ class EventStateRepository extends ServiceEntityRepository
         parent::__construct($registry, EventState::class);
     }
 
+    public function findStatesForFixtures()
+    {
+        $states = ['created', 'open'];
+        return $this
+            ->createQueryBuilder('s')
+            ->andWhere('s.name IN (:states)')
+            ->setParameter(':states', $states)
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return EventState[] Returns an array of EventState objects
     //  */

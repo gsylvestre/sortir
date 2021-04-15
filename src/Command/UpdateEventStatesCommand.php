@@ -89,6 +89,7 @@ class UpdateEventStatesCommand extends Command
                 $io->writeln($message);
                 //puis dans les logs
                 $this->logger->info($message);
+                continue;
             }
 
             if ($this->stateHelper->shouldChangeStateToOngoing($event)){
@@ -96,6 +97,7 @@ class UpdateEventStatesCommand extends Command
                 $message = $event->getId() . " " . $event->getName() . " : statut changé en ongoing";
                 $io->writeln($message);
                 $this->logger->info($message);
+                continue;
             }
 
             if ($this->stateHelper->shouldChangeStateToEnded($event)){
@@ -103,6 +105,7 @@ class UpdateEventStatesCommand extends Command
                 $message = $event->getId() . " " . $event->getName() . " : statut changé en ended";
                 $io->writeln($message);
                 $this->logger->info($message);
+                continue;
             }
 
             if ($this->stateHelper->shouldChangeStateToArchived($event)){
@@ -110,6 +113,7 @@ class UpdateEventStatesCommand extends Command
                 $message = $event->getId() . " " . $event->getName() . " : statut changé en archived";
                 $io->writeln($message);
                 $this->logger->info($message);
+                continue;
             }
         }
 

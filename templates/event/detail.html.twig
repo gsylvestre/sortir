@@ -15,6 +15,7 @@
     {% endif %}
     </div>
     <div>La sortie début le : {{ event.startDate|date("d-m-Y à H:i") }}</div>
+    <div>Inscriptions jusqu'au : {{ event.registrationLimitDate|date("d-m-Y à H:i") }}</div>
     <div>
         Organisée par
         {% if not event.author.isDeleted and event.author.isActive %}
