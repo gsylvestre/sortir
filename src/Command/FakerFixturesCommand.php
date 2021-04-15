@@ -88,17 +88,25 @@ class FakerFixturesCommand extends Command
         $this->loadSchoolSites();
         $this->loadCities();
         $this->loadUsers($num = 50);
-        $this->loadLocations($num = 30);
+        $this->loadLocations($num = 60);
 
         $this->loadEventStates();
-        $this->loadEvents($num = 100);
-        $this->loadEventSubscriptions($num = 500);
+        $this->loadEvents($num = 300);
+        $this->loadEventSubscriptions();
         $this->loadEventCancelations();
 
         //that's it
-        $this->progress->finish("Done!");
-        $this->io->success('Fixtures loaded!');
-        return 0;
+        $this->progress->finish("OK!");
+        $this->io->success('Fixtures chargées!');
+
+        //au lieu de s'embêter à essayer d'avoir des états cohérents directement
+        //ici on lance notre commande de mise à jour des états automatiquement !
+        $this->io->section("Mise à jour des états !");
+        $input = new ArrayInput([]);
+        $command = $this->getApplication()->find('app:update-event-states');
+        $returnCode = $command->run($input, $output);
+
+        return $returnCode;
     }
 
 
@@ -203,8 +211,6 @@ class FakerFixturesCommand extends Command
             $user = new User();
 
             $user->setEmail( $this->faker->unique()->email );
-            //no faker method found!
-            //$user->setRoles( $this->faker-> );
             //password
             $plainPassword = "ryanryan";
             $hash = $this->passwordEncoder->encodePassword($user, $plainPassword);
@@ -212,8 +218,8 @@ class FakerFixturesCommand extends Command
             $user->setLastname( $this->faker->lastName );
             $user->setFirstname( $this->faker->firstName );
             $user->setPhone( $this->faker->optional($chancesOfValue = 0.5, $default = null)->text(20) );
-            $user->setIsAdmin( $this->faker->boolean($chanceOfGettingTrue = 50) );
-            $user->setIsActive( $this->faker->boolean($chanceOfGettingTrue = 50) );
+            $user->setIsAdmin( $this->faker->boolean($chanceOfGettingTrue = 20) );
+            $user->setIsActive( $this->faker->boolean($chanceOfGettingTrue = 90) );
             $user->setCreatedDate( $this->faker->dateTimeBetween($startDate = "- 12 months", $endDate = "- 3 months") );
             $user->setSchool( $this->faker->randomElement($allSchoolSites) );
 
@@ -243,7 +249,7 @@ class FakerFixturesCommand extends Command
 
             $location->setLatitude( $city->getLat() );
             $location->setLongitude( $city->getLng() );
-            $location->setZip( $city->getZip() );
+            $location->setZip( empty($city->getZip()) ? "99999" : $city->getZip() );
             $location->setCity( $city );
 
             $this->doctrine->getManager()->persist($location);
@@ -262,21 +268,22 @@ class FakerFixturesCommand extends Command
     protected function loadEvents(int $num): void
     {
         $this->progress->setMessage("loading events");
+
         $allLocations = $this->doctrine->getRepository(Location::class)->findAll();
         $allEventStates = $this->doctrine->getRepository(EventState::class)->findAll();
         $allUsers = $this->doctrine->getRepository(User::class)->findAll();
+
         for($i=0; $i<$num; $i++){
             $event = new Event();
 
             $event->setName( $this->faker->catchPhrase );
 
             $event->setCreationDate( $this->faker->dateTimeBetween($startDate = "- 3 months") );
-            $this->io->writeln($event->getCreationDate()->format("Y-m-d"));
             $event->setRegistrationLimitDate( $this->faker->dateTimeBetween($event->getCreationDate(), $event->getCreationDate()->add(new \DateInterval("P60D")) ));
             $event->setStartDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate(), $event->getRegistrationLimitDate()->add(new \DateInterval("P2D")) ));
 
             $event->setDuration( $this->faker->optional($chancesOfValue = 0.9, $default = null)->numberBetween($min = 1, $max = 6) );
-            $event->setMaxRegistrations( $this->faker->optional($chancesOfValue = 0.5, $default = null)->numberBetween($min = 1000, $max = 9000) );
+            $event->setMaxRegistrations( $this->faker->optional($chancesOfValue = 0.7, $default = null)->numberBetween($min = 7, $max = 160) );
             $event->setInfos( $this->faker->paragraphs($nb = $this->faker->randomDigitNot(0), $asText = true) );
             $event->setLocation( $this->faker->randomElement($allLocations) );
             $event->setState( $this->faker->randomElement($allEventStates) );
@@ -296,23 +303,28 @@ class FakerFixturesCommand extends Command
      * @param int $num
      * @throws \Exception
      */
-    protected function loadEventSubscriptions(int $num): void
+    protected function loadEventSubscriptions(): void
     {
         $this->progress->setMessage("loading eventsubscriptions");
         $allUsers = $this->doctrine->getRepository(User::class)->findAll();
         $allEvents = $this->doctrine->getRepository(Event::class)->findAll();
-        for($i=0; $i<$num; $i++){
-            $eventSubscription = new EventSubscription();
+        foreach($allEvents as $event){
+            $max = $event->getMaxRegistrations() > count($allUsers) ? count($allUsers) : $event->getMaxRegistrations();
+            $num = $this->faker->numberBetween(0, $max);
 
-            $event = $this->faker->randomElement($allEvents);
+            $this->faker->unique(true);
+            for($i=0; $i<$num; $i++){
+                $eventSubscription = new EventSubscription();
 
-            $eventSubscription->setCreatedDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate()->sub(new \DateInterval("P30D")), $event->getRegistrationLimitDate()) );
-            $eventSubscription->setUser( $this->faker->randomElement($allUsers) );
-            $eventSubscription->setEvent( $event );
+                $eventSubscription->setCreatedDate( $this->faker->dateTimeBetween($event->getRegistrationLimitDate()->sub(new \DateInterval("P30D")), $event->getRegistrationLimitDate()) );
+                $user = $this->faker->unique()->randomElement($allUsers);
+                $eventSubscription->setUser($user);
+                $eventSubscription->setEvent( $event );
 
-            $this->doctrine->getManager()->persist($eventSubscription);
-            $this->progress->advance();
-    }
+                $this->doctrine->getManager()->persist($eventSubscription);
+                $this->progress->advance();
+            }
+        }
 
         $this->doctrine->getManager()->flush();
     }
