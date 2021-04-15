@@ -1,36 +1,80 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
     <h2>{{ event.name }}</h2>
-    <h3>le {{ event.startDate|date("d-m-Y à H:i") }}</h3>
-    <div>Inscriptions jusqu'au {{ event.registrationLimitDate|date("d-m-Y à H:i") }}</div>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h3>Le {{ event.startDate|date("d-m-Y à H:i") }}, à {{ event.location.city.name }}</h3>
 
 
-    <h3>État de la sortie : {{ event.state.prettyName }}</h3>
-    <div>{{ event.infos|nl2br }}</div>
+            {% if event.state.name == 'canceled' %}
+                <div class="alert alert-danger text-center">Cette sortie a été annulée ({{ event.cancelation.reason }})</div>
+            {% elseif event.state.name == 'created' %}
+                <div class="alert alert-warning text-center">Cette sortie n'est pas publiée (et donc invisible)</div>
+            {% elseif event.state.name == 'archived' %}
+                <div class="alert alert-warning text-center">Cette sortie est méga vieille</div>
+            {% elseif event.state.name == 'ongoing' %}
+                <div class="alert alert-warning text-center">Cette sortie est en cours !</div>
+            {% elseif event.state.name == 'closed' %}
+                <div class="alert alert-warning text-center">Trop tard, les inscriptions sont fermées !</div>
+            {% elseif event.state.name == 'open' %}
+                <div class="alert alert-success text-center">Les inscriptions sont ouvertes !</div>
+            {% endif %}
 
-    <div>
-        Organisée par
-        {% if not event.author.isDeleted and event.author.isActive %}
-            <a href="{{ path('user_profile', {id: event.author.id}) }}" title="Voir son profil">{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</a>
-        {% else %}
-            un utilisateur supprimé ou banni
-        {% endif %}
-    du campus de {{ event.author.school.name }} le {{ event.creationDate|date("d-m-Y") }}</div>
-    <div>
-        {% if event.state.name == 'open' %}
-            <a class="btn btn-{{ event.isSubscribed(app.user) ? "danger" : "success" }}" href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
-        {% elseif event.state.name == 'closed' and event.isSubscribed(app.user) %}
-            <a class="btn btn-danger" href="{{ path('subscription_toggle', {'id': event.id}) }}">Me désinscrire</a>
-        {% elseif event.state.name == 'created' and event.author == app.user %}
-            <a href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>
-            <a href="#">Modifier</a>
-        {% endif %}
-        {% if event.author == app.user %}
-            <a href="{{ path('event_cancel', {'id': event.id}) }}">Annuler</a>
-        {% endif %}
+            <div>{{ event.infos|nl2br }}</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Votre inscription</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ event.isSubscribed(app.user) ? "Vous êtes inscrit !" : "Vous n'êtes pas inscrit !" }}</h6>
+
+
+
+                    {% if event.state.name == 'open' %}
+                    <a class="btn btn-{{ event.isSubscribed(app.user) ? "danger" : "success" }}" href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
+                    {% elseif event.state.name == 'closed' and event.isSubscribed(app.user) %}
+                    <a class="btn btn-danger" href="{{ path('subscription_toggle', {'id': event.id}) }}">Me désinscrire</a>
+                    {% endif %}
+
+                    <div>Date limite : {{ event.registrationLimitDate|date("d-m-Y à H:i") }}</div>
+
+                </div>
+            </div>
+
+
+            <div class="card mt-4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">À propos de la sortie</h5>
+
+
+                    {% if event.author == app.user %}
+                        {% if event.state.name == 'created' %}
+                            <a class="btn btn-success" href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>
+                            <a class="btn btn-warning" href="#">Modifier</a>
+                        {% endif %}
+                        {% if event.state.name == 'open' or event.state.name == 'closed' %}
+                            <a class="btn btn-danger" href="{{ path('event_cancel', {'id': event.id}) }}">Annuler</a>
+                        {% endif %}
+                    {% endif %}
+
+                    <p>
+                    Organisée par
+                    {% if not event.author.isDeleted and event.author.isActive %}
+                        <a href="{{ path('user_profile', {id: event.author.id}) }}" title="Voir son profil">{{ event.author.firstname ~ " " ~ event.author.lastname|first }}.</a>
+                    {% else %}
+                        un utilisateur supprimé ou banni
+                    {% endif %}
+                    du campus de {{ event.author.school.name }}<br>
+                    Sortie créée le {{ event.creationDate|date("d-m-Y") }}
+                    </p>
+
+                </div>
+            </div>
+        </div>
     </div>
-
     <div class="row">
         <div class="col-md-8">
             <h4 class="lead mt-3">La sortie a lieu à {{ event.location.city.name }} ({{ event.location.zip }})</h4>

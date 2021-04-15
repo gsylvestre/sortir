@@ -61,7 +61,12 @@ class EventController extends AbstractController
      */
     public function detail(Event $event)
     {
-        //todo : vérifier que le statut de la sortie permet son affichage
+        //seuls les admins et l'auteur peuvent passer ici
+        if(!$this->isGranted("ROLE_ADMIN")) {
+            if ($event->getState()->getName() === "created" && $event->getAuthor() !== $this->getUser()) {
+                throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
+            }
+        }
 
         if (!$event){
             throw $this->createNotFoundException("Cette sortie n'existe pas !");
@@ -133,6 +138,8 @@ class EventController extends AbstractController
         }
 
         $stateHelper->changeEventState($event, "open");
+
+        $this->addFlash('success', 'La sortie est publiée !');
         return $this->redirectToRoute('event_list');
     }
 
