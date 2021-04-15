@@ -69,18 +69,43 @@ class SmokeTest extends AbstractController
         $this->assertResponseIsSuccessful('response should be succesfull 200');
     }
 
+    /**
+     * Certaines pages devraient être accessibles par les users anonymes
+     *
+     * @dataProvider provideOpenPagesUrls
+     */
+    public function testPageAreAccessibleAsAnonymous($url)
+    {
+        $crawler = $this->client->request('GET', $url);
+        $this->assertResponseIsSuccessful('response should be succesfull 200');
+    }
+
+    //fournit les urls des pages accessibles sans être connecté
+    public function provideOpenPagesUrls()
+    {
+        return [
+            ["/connexion"],
+            ["/mot-de-passe-oublie"],
+        ];
+    }
+
     //fournit les urls de base du site
     //voir les annotation au-dessus des méthodes plus haut
     public function provideUrls()
     {
         return [
+
             ["/"],
+
             ["/sorties"],
             ["/sorties/details/67"],
             ["/sorties/ajout"],
+
             ["/profil/modification"],
             ["/profil/modification/photo"],
+            ["/profil/modification/mot-de-passe"],
             ["/profil/12"],
+
         ];
     }
 
@@ -89,8 +114,16 @@ class SmokeTest extends AbstractController
     public function provideBackOfficeUrls()
     {
         return [
-            ["/admin/utilisateurs/ajout"],
+            ["/admin/villes/liste/2"],
+            ["/admin/villes/ajouter"],
+            ["/admin/villes/12"],
+            ["/admin/villes/12/modifier"],
+
             ["/admin/utilisateurs"],
+            ["/admin/utilisateurs/ajout"],
+            ["/admin/utilisateurs/charger-un-csv"],
+            ["/admin/utilisateurs/telecharger-un-modele-de-csv"],
+
             ["/admin"],
         ];
     }

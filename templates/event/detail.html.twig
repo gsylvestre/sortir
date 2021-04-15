@@ -20,7 +20,7 @@
     <div>
         {% if event.state.name == 'open' %}
             <a class="btn btn-{{ event.isSubscribed(app.user) ? "danger" : "success" }}" href="{{ path('subscription_toggle', {'id': event.id}) }}">{{ event.isSubscribed(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
-        {% elseif event.state.name == 'closed' and event.isSbuscribed(app.user) %}
+        {% elseif event.state.name == 'closed' and event.isSubscribed(app.user) %}
             <a class="btn btn-danger" href="{{ path('subscription_toggle', {'id': event.id}) }}">Me désinscrire</a>
         {% elseif event.state.name == 'created' and event.author == app.user %}
             <a href="{{ path('event_publish', {'id': event.id}) }}">Publier</a>

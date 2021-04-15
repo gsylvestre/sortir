@@ -9,6 +9,6 @@ class DefaultControllerTest extends AbstractController
         $this->logIn();
         $crawler = $this->client->request('GET', "/");
         $this->assertResponseIsSuccessful('response should be succesfull 200');
-        $this->assertSelectorTextContains('h4', 'sorties organisées');
+        $this->assertSelectorTextContains('p.lead', 'sorties organisées');
     }
 }
