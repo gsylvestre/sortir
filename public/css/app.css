@@ -18,6 +18,8 @@ header {
 
 header .container {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 header h1 {
@@ -36,6 +38,7 @@ header > div {
 
 header .main-nav {
     display: flex;
+    flex-direction: column;
     align-items: baseline;
 }
 
@@ -48,10 +51,11 @@ header .main-nav a:hover {
 }
 
 header .main-nav h1 {
-    margin: 0 30px 0 35px;
+    margin: 0 30px 0 0;
 }
 
 header img {
+    display: none;
     height: 52px;
     position: absolute;
     top: -6px;
@@ -64,8 +68,13 @@ header .home-main-link:hover img {
     transform: rotate(-10deg);
 }
 
+header .user-nav {
+    display: flex;
+    flex-direction: column;
+}
+
 header .user-nav a {
-    margin-left: 20px;
+    margin-left: 0;
 }
 
 main {
@@ -155,4 +164,24 @@ ul.pagination {
 
 .event-table {
     font-size: 0.9rem;
+}
+
+@media screen and (min-width: 800px) {
+    header .container,
+    header .main-nav,
+    header .user-nav {
+        flex-direction: row;
+    }
+
+    header .user-nav a {
+        margin-left: 20px;
+    }
+
+    header img {
+        display: block;
+    }
+
+    header .main-nav h1 {
+        margin: 0 30px 0 35px;
+    }
 }
