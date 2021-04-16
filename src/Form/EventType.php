@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\Location;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,6 +45,12 @@ class EventType extends AbstractType
                 'label' => 'Lieu',
                 'class' => Location::class,
                 'choice_label' => 'name',
+            ])
+            ->add('publishNow', CheckboxType::class, [
+                'label' => 'Rendre visible tout de suite',
+                'mapped' => false,
+                'data' => true,
+                'required' => false,
             ])
         ;
     }

@@ -112,8 +112,13 @@ class EventController extends AbstractController
             $manager->persist($event);
             $manager->flush();
 
+            //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
+            if ($eventForm->get('publishNow')->getData() === true){
+                return $this->redirectToRoute('event_publish', ['id' => $event->getId()]);
+            }
+
             $this->addFlash('success', 'Sortie créée, bravo !');
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('event_detail', ['id' => $event->getId()]);
         }
 
         //formulaire de lieu, pas traité ici ! Il est en effet soumis en ajax, vers une autre route
@@ -132,24 +137,24 @@ class EventController extends AbstractController
     public function publish(Event $event, EventStateHelper $stateHelper)
     {
         //vérifie que c'est bien l'auteur (ou un admin) qui est en train de publier
-        if ($this->getUser() !== $event->getAuthor() && !$this->isGranted("ROLE_ADMIN")){
+        if ($this->getUser() !== $event->getAuthor() && !$this->isGranted("ROLE_ADMIN")) {
             throw $this->createAccessDeniedException("Seul l'auteur de cette sortie peut la publier !");
         }
 
         //vérifie que ça peut être publié (pas annulée, pas closed, etc.)
-        if (!$stateHelper->canBePublished($event)){
+        if (!$stateHelper->canBePublished($event)) {
             $this->addFlash('danger', 'Cette sortie ne peut pas être publiée !');
             return $this->redirectToRoute('event_list');
         }
 
         $stateHelper->changeEventState($event, "open");
-
         $this->addFlash('success', 'La sortie est publiée !');
-        return $this->redirectToRoute('event_list');
+
+        return $this->redirectToRoute('subscription_toggle', ['id' => $event->getId()]);
     }
 
 
-    /**
+        /**
      * @Route("/{id}/annuler", name="cancel")
      */
     public function cancel(Event $event, EventStateHelper $stateHelper, Request $request)

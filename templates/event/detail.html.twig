@@ -12,7 +12,7 @@
             {% if event.state.name == 'canceled' %}
                 <div class="alert alert-danger text-center">Cette sortie a été annulée ({{ event.cancelation.reason }})</div>
             {% elseif event.state.name == 'created' %}
-                <div class="alert alert-warning text-center">Cette sortie n'est pas publiée (et donc invisible)</div>
+                <div class="alert alert-warning text-center">Cette sortie n'est pas publiée (et donc invisible). <a class="" href="{{ path('event_publish', {'id': event.id}) }}">Publiez-la !</a></div>
             {% elseif event.state.name == 'archived' %}
                 <div class="alert alert-warning text-center">Cette sortie est méga vieille</div>
             {% elseif event.state.name == 'ongoing' %}

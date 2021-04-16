@@ -19,6 +19,7 @@
     {{ form_widget(eventForm.location) }}
     {{ form_errors(eventForm.location) }}
 
+    <div class="mt-3">{{ form_row(eventForm.publishNow) }}</div>
     <button class="btn btn-primary mt-3">Créer !</button>
 
     {{ form_end(eventForm) }}
