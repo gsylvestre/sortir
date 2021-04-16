@@ -3,11 +3,12 @@
 **Projet ENI Symfony 139A**  
 
 Peut être intéressant à explorer : 
-- Les fixtures maisons, (dossier `Command`)
+- Les fixtures maisons (dossier `Command`)
 - Le système d'oubli de mot de passe fait maison (`SecurityController`)
-- Le service pour MapBox (dossier `Geolocation`)
+- Le service pour MapBox (dossier `Geolocation`) et la carte (`detail.html.twig`)
 - Requête AJAX dans `templates/event/create.html.twig`
 - Les tests fonctionnels dans `/tests/`
+- Le chargement des utilisateurs par .csv (`Admin/UserController`)
 
 ### Installation
 
@@ -19,7 +20,7 @@ Peut être intéressant à explorer :
     ```bash
     git clone https://github.com/gsylvestre/sortir.git sortir-guillaume
     ```
-3. Naviguer _dans_ le répertoire de ce projet : 
+3. Naviguer dans le répertoire de ce projet : 
     ```bash
     cd sortir-guillaume/
     ```
