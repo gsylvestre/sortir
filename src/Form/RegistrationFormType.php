@@ -32,7 +32,7 @@ class RegistrationFormType extends AbstractType
             ->add('lastname', null, ['label' => 'Nom'])
             ->add('phone', null, ['label' => 'Téléphone'])
             ->add('school', EntityType::class, [
-                'label' => 'Votre école de rattachement',
+                'label' => 'École de rattachement',
                 'class' => SchoolSite::class,
                 'choice_label' => 'name'
             ])
@@ -49,7 +49,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Votre mot de passe devrait avoir au moins {{ limit }} caractères',
+                        'minMessage' => 'Le mot de passe devrait avoir au moins {{ limit }} caractères',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
