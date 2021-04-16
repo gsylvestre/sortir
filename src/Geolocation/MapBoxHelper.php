@@ -2,10 +2,18 @@
 
 namespace App\Geolocation;
 
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MapBoxHelper
 {
+    private $client;
+
+    public function __construct(HttpClientInterface $client)
+    {
+        //on récupère un client HTTP de Symfony pour exécuter des requêtes HTTP à mapbox
+        $this->client = $client;
+    }
+
     //devrait être secret !
     const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZ3N5bHZlc3RyZSIsImEiOiJjazN3MHYzemUwcjRpM2xwaXVidGNwOTluIn0.oNngcvTobTdNcBgg3tcPtg";
 
@@ -14,22 +22,16 @@ class MapBoxHelper
      */
     public function getAddressCoordinates(string $streetAddress, string $zip, string $city, ?string $country = "fr"): array
     {
-        //client http de la librairie externe Guzzle (maintenant, Symfony propose un Client HTTP par défaut)
-        $client = new Client();
-
         //préparation de l'URL à laquelle on fait une requête
         $search = urlencode("$streetAddress $zip $city");
         $token = self::MAPBOX_ACCESS_TOKEN;
         $url = "https://api.mapbox.com/geocoding/v5/mapbox.places/$search.json?access_token=$token&country=$country";
 
-        //on fait une reequête à mapbox.com
-        $response = $client->get($url);
+        //exécute la requête et récupère la réponse
+        $response = $this->client->request('GET', $url);
 
-        //on récupère le contenu de la réponse
-        $json = $response->getBody();
-
-        //on transforme ce json en tableau
-        $data = json_decode($json, true);
+        //on transforme cette réponse (json) en tableau
+        $data = $response->toArray();
 
         //on retourne toujours le premier résultat
         if (!empty($data['features'][0])){
