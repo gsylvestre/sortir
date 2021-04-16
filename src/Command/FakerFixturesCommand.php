@@ -6,12 +6,10 @@ use App\Entity\EventCancelation;
 use App\EventState\EventStateHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Helper\ProgressIndicator;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\SchoolSite;
@@ -104,13 +102,12 @@ class FakerFixturesCommand extends Command
 
         //au lieu de s'embêter à essayer d'avoir des états cohérents directement
         //ici on lance notre commande de mise à jour des états automatiquement !
-        //$this->io->section("Mise à jour des états !");
-        //$input = new ArrayInput([]);
-        //$command = $this->getApplication()->find('app:update-event-states');
-        //$returnCode = $command->run($input, $output);
+        $this->io->section("Mise à jour des états !");
+        $input = new ArrayInput([]);
+        $command = $this->getApplication()->find('app:update-event-states');
+        $returnCode = $command->run($input, $output);
 
-        //return $returnCode;
-        return Command::SUCCESS;
+        return $returnCode;
     }
 
 

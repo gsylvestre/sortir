@@ -93,11 +93,11 @@
     "egulias/email-validator": {
         "version": "2.1.15"
     },
+    "fakerphp/faker": {
+        "version": "v1.14.1"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
-    },
-    "fzaninotto/faker": {
-        "version": "v1.9.1"
     },
     "gsylvestre/php-token-generator": {
         "version": "v0.1"
