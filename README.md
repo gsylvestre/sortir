@@ -2,6 +2,8 @@
 
 **Projet ENI Symfony 139A**  
 
+![screenshot du site](https://github.com/gsylvestre/sortir/blob/master/screenshot.png?raw=true)  
+
 Peut être intéressant à explorer : 
 - Les fixtures maisons (dossier `Command`)
 - Le système d'oubli de mot de passe fait maison (`SecurityController`)
